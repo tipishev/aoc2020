@@ -1,5 +1,5 @@
 {application, aoc2020,
- [{description, "An OTP application"},
+ [{description, "Advent of Code 2020 solutions"},
   {vsn, "0.1.0"},
   {registered, []},
   {mod, {aoc2020_app, []}},
