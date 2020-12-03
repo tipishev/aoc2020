@@ -19,7 +19,10 @@ solve_part2(_Input) -> undefined.
       Map :: list(list(pos_integer())),
       X :: integer(),
       Y :: integer(),
-      IsTree :: boolean().
+      IsTree :: boolean() | out_of_bounds.
 
+is_tree(Map, X, _) when X > length(Map)-> out_of_bounds;
 is_tree(Map, X, Y) ->
-    lists:nth(Y, lists:nth(X, Map)) =:= $#.
+    Line = lists:nth(X, Map),
+    Symbol = lists:nth(Y, Line),
+    Symbol =:= $#.
