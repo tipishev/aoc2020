@@ -34,11 +34,18 @@ is_tree_test_() ->
 
     ].
 
-tree_count_test_() ->
+part1_test_() ->
     [
 
      {"Example",
      ?_assertEqual(7, day3:count_trees(?TEST_MAP, 1, 3))}
-
     ].
 
+part2_test_() ->
+    [
+
+     {"In the above example, these slopes would find 2, 7, 3, 4,
+      and 2 tree(s) respectively; multiplied together,
+      these produce the answer 336.",
+     ?_assertEqual(336, day3:solve_part2(?TEST_MAP))}
+    ].
