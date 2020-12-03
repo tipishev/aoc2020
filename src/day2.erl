@@ -1,8 +1,5 @@
 -module(day2).
 
-% -behaviour(aoc_solution).
-
-%% aoc_solution callbacks
 -export([solve_part1/1, solve_part2/1]).
 
 %% for tests

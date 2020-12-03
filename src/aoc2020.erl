@@ -6,7 +6,7 @@
 
 -type day() :: day1.
 
--define(INPUTS_DIR, "inputs").
+-define(INPUTS_DIR, "input").
 
 -spec solve(Day :: day()) -> solution().
 solve(day1) ->
