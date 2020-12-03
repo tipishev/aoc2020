@@ -33,3 +33,12 @@ is_tree_test_() ->
      ?_assert(day3:is_tree(?TEST_MAP, 1, 14))}
 
     ].
+
+tree_count_test_() ->
+    [
+
+     {"Example",
+     ?_assertEqual(7, day3:count_trees(?TEST_MAP, 1, 3))}
+
+    ].
+
