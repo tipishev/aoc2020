@@ -21,4 +21,5 @@ solve_part2(_Input) -> undefined.
       Y :: integer(),
       IsTree :: boolean().
 
-is_tree(Map, X, Y) -> false.
+is_tree(Map, X, Y) ->
+    lists:nth(Y, lists:nth(X, Map)) =:= $#.
