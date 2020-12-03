@@ -8,6 +8,7 @@
 
 -define(INPUTS_DIR, "input").
 
+% TODO generalize to all days
 -spec solve(Day :: day()) -> solution().
 solve(day1) ->
     Input = read_newline_separated_integers(day1),
