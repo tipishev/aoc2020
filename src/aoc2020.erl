@@ -22,6 +22,7 @@ solve(day3) ->
     Input = read_newline_separated_strings(day3),
     #solution{part1=day3:solve_part1(Input),
               part2=day3:solve_part2(Input)}.
+
 %%% Helpers
 
 %% reads newline-separated integers from "inputs/Filename"
@@ -38,6 +39,7 @@ read_newline_separated_strings(Filename) ->
     {ok, Data} = file:read_file(Fullpath),
     string:tokens(binary_to_list(Data), "\n").
 
+% TODO move to day 2?
 read_day2(Filename) ->
     Fullpath = filename:join([?INPUTS_DIR, Filename]),
     {ok, Data} = file:read_file(Fullpath),
