@@ -42,15 +42,15 @@ tuples_to_passport(Tuples) ->
 tuples_to_passport([], Passport) -> Passport;
 tuples_to_passport([{Key, Value} | Tail], Passport) ->
     NewPassport = case list_to_existing_atom(Key) of
-        byr -> Passport#passport{byr=Value};
-        iyr -> Passport#passport{iyr=Value};
-        eyr -> Passport#passport{eyr=Value};
-        hgt -> Passport#passport{hgt=Value};
-        hcl -> Passport#passport{hcl=Value};
-        ecl -> Passport#passport{ecl=Value};
-        pid -> Passport#passport{pid=Value};
-        cid -> Passport#passport{cid=Value}
-    end,
+                      byr -> Passport#passport{byr=Value};
+                      iyr -> Passport#passport{iyr=Value};
+                      eyr -> Passport#passport{eyr=Value};
+                      hgt -> Passport#passport{hgt=Value};
+                      hcl -> Passport#passport{hcl=Value};
+                      ecl -> Passport#passport{ecl=Value};
+                      pid -> Passport#passport{pid=Value};
+                      cid -> Passport#passport{cid=Value}
+                  end,
     tuples_to_passport(Tail, NewPassport).
 
 %%% part1
@@ -69,13 +69,13 @@ validate(_) -> false.
 %%% part2
 
 validate2(#passport{byr=Byr, iyr=Iyr, eyr=Eyr, hgt=Hgt,
-                   hcl=Hcl, ecl=Ecl, pid=Pid, cid=_})  when Byr =/= undefined,
-                                                            Iyr =/= undefined,
-                                                            Eyr =/= undefined,
-                                                            Hgt =/= undefined,
-                                                            Hcl =/= undefined,
-                                                            Ecl =/= undefined,
-                                                            Pid =/= undefined ->
+                    hcl=Hcl, ecl=Ecl, pid=Pid, cid=_})  when Byr =/= undefined,
+                                                             Iyr =/= undefined,
+                                                             Eyr =/= undefined,
+                                                             Hgt =/= undefined,
+                                                             Hcl =/= undefined,
+                                                             Ecl =/= undefined,
+                                                             Pid =/= undefined ->
 
     % prepare data
     BirthYear = list_to_integer(Byr),
@@ -84,14 +84,14 @@ validate2(#passport{byr=Byr, iyr=Iyr, eyr=Eyr, hgt=Hgt,
     Height = parse_height(Hgt),
 
     Validations = [
-        validate_one(within(BirthYear, 1920, 2002), wrong_birth_year),
-        validate_one(within(IssueYear, 2010, 2020), wrong_issue_year),
-        validate_one(within(ExpirationYear, 2020, 2030), wrong_expiration_year),
-        validate_one(validate_height(Height), wrong_height),
-        validate_one(validate_hair_color(Hcl), wrong_hair_color),
-        validate_one(validate_eye_color(Ecl), wrong_eye_color),
-        validate_one(validate_passport_id(Pid), wrong_passport_id)
-    ],
+                   validate_one(within(BirthYear, 1920, 2002), wrong_birth_year),
+                   validate_one(within(IssueYear, 2010, 2020), wrong_issue_year),
+                   validate_one(within(ExpirationYear, 2020, 2030), wrong_expiration_year),
+                   validate_one(validate_height(Height), wrong_height),
+                   validate_one(validate_hair_color(Hcl), wrong_hair_color),
+                   validate_one(validate_eye_color(Ecl), wrong_eye_color),
+                   validate_one(validate_passport_id(Pid), wrong_passport_id)
+                  ],
     % io:format("~p~n", [Validations]),  % for debugging
     lists:all(fun(IsValid) -> IsValid =:= true end, Validations);
 validate2(_) ->
