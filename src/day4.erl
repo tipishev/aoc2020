@@ -16,7 +16,8 @@ solve_part1(Input) ->
 
 solve_part2(Input) ->
     Passports = parse(Input),
-    length(lists:filter(fun validate2/1, Passports)).
+    ValidPassports = lists:filter(fun validate2/1, Passports),
+    length(ValidPassports).
 
 %%% internals
 
@@ -76,25 +77,37 @@ validate2(#passport{byr=Byr, iyr=Iyr, eyr=Eyr, hgt=Hgt,
                                                             Ecl =/= undefined,
                                                             Pid =/= undefined ->
 
+    % prepare data
     BirthYear = list_to_integer(Byr),
     IssueYear = list_to_integer(Iyr),
     ExpirationYear = list_to_integer(Eyr),
     Height = parse_height(Hgt),
 
-    within(BirthYear, 1920, 2002)
-    andalso within(IssueYear, 2010, 2020)
-    andalso within(ExpirationYear, 2020, 2030)
-
-    andalso validate_height(Height)
-    andalso validate_hair_color(Hcl)
-    andalso lists:member(Ecl, ["amb", "blu," "brn", "gry", "grn", "hzl", "oth"])
-    andalso validate_passport_id(Pid);
+    Validations = [
+        validate_one(within(BirthYear, 1920, 2002), wrong_birth_year),
+        validate_one(within(IssueYear, 2010, 2020), wrong_issue_year),
+        validate_one(within(ExpirationYear, 2020, 2030), wrong_expiration_year),
+        validate_one(validate_height(Height), wrong_height),
+        validate_one(validate_hair_color(Hcl), wrong_hair_color),
+        validate_one(validate_eye_color(Ecl), wrong_eye_color),
+        validate_one(validate_passport_id(Pid), wrong_passport_id)
+    ],
+    % io:format("~p~n", [Validations]),  % for debugging
+    lists:all(fun(IsValid) -> IsValid =:= true end, Validations);
 validate2(_) ->
     false.
+
+validate_one(ValidationResult, Error) ->
+    case ValidationResult of
+        true -> true;
+        false -> Error
+    end.
 
 within(Number, Min, Max) when Number >= Min, Number =< Max -> true;
 within(_, _, _) -> false.
 
+validate_eye_color(EyeColor) ->
+    lists:member(EyeColor, ["amb", "blu," "brn", "gry", "grn", "hzl", "oth"]).
 
 validate_passport_id(Pid) when length(Pid) =:= 9 ->
     ValidChars = sets:from_list("0123456789"),
