@@ -1,7 +1,7 @@
 -module(day4).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1, validate/1]).
+-export([parse/1, validate/1, parse_height/1]).
 
 % LYSE suggests to keep records private to modules, no header files
 -record(passport, {byr, iyr, eyr, hgt, hcl, ecl, pid, cid}).
@@ -9,11 +9,11 @@
 %%% solution
 
 solve_part1(Input) ->
-    Passports =  parse(Input),
+    Passports = parse(Input),
     length(lists:filter(fun validate/1, Passports)).
 
 solve_part2(Input) ->
-    Passports =  parse(Input),
+    Passports = parse(Input),
     length(lists:filter(fun validate2/1, Passports)).
 
 %%% internals
@@ -73,30 +73,55 @@ validate2(#passport{byr=Byr, iyr=Iyr, eyr=Eyr, hgt=Hgt,
                                                             Hcl =/= undefined,
                                                             Ecl =/= undefined,
                                                             Pid =/= undefined ->
-    io:format("~p~n", [Hgt]),
-
 
     BirthYear = list_to_integer(Byr),
     IssueYear = list_to_integer(Iyr),
     ExpirationYear = list_to_integer(Eyr),
-    {HeightUnits, HeightValue} = parse_height(Hgt),
+    Height = parse_height(Hgt),
 
-    BirthYear >= 1920 andalso BirthYear =< 2002
-    andalso IssueYear >= 2010 andalso IssueYear =< 2020
-    andalso ExpirationYear >= 2020 andalso ExpirationYear =< 2030
-    andalso (
-      (HeightUnits =:= cm andalso HeightValue >= 150 andalso HeightValue =< 193)
-      orelse
-      (HeightUnits =:= in andalso HeightValue >= 59 andalso HeightValue =< 76)
-     );
+    within(BirthYear, 1920, 2002)
+    andalso within(IssueYear, 2010, 2020)
+    andalso within(ExpirationYear, 2020, 2030)
+
+    andalso validate_height(Height)
+    andalso validate_hair_color(Hcl)
+    andalso lists:member(Ecl, ["amb", "blu," "brn", "gry", "grn", "hzl", "oth"])
+    andalso validate_passport_id(Pid);
 validate2(_) ->
     false.
 
-parse_height(HeightStr) ->
-    case string:split(HeightStr, "cm") of
-        [CmStrVal, []] ->
-            {cm, list_to_integer(CmStrVal)};
-        [InchStr] ->
-            [InchStrVal, []] = string:split(InchStr, "in"),
-            {in, list_to_integer(InchStrVal)}
-    end.
+within(Number, Min, Max) when Number >= Min, Number =< Max -> true;
+within(_, _, _) -> false.
+
+
+validate_passport_id(Pid) when length(Pid) =:= 9 ->
+    ValidChars = sets:from_list("0123456789"),
+    GivenChars = sets:from_list(Pid),
+    sets:is_subset(GivenChars, ValidChars);
+validate_passport_id(_) -> false.
+
+validate_hair_color([$# | MaybeHex]) when length(MaybeHex) =:= 6 ->
+    ValidChars = sets:from_list("0123456789abcdef"),
+    GivenChars = sets:from_list(MaybeHex),
+    sets:is_subset(GivenChars, ValidChars);
+validate_hair_color(_) -> false.
+
+
+validate_height({cm, HeightValue}) -> within(HeightValue, 150, 193);
+validate_height({in, HeightValue}) -> within(HeightValue, 59, 76);
+validate_height(_) -> false.
+
+parse_height(HeightStr) when is_list(HeightStr), length(HeightStr) > 3 ->
+    Last2Chars = string:sub_string(HeightStr, length(HeightStr) - 1),
+    case Last2Chars of
+        "cm" ->
+            {cm, extract_number(HeightStr)};
+        "in" ->
+            {in, extract_number(HeightStr)};
+        _ -> not_a_height
+    end;
+parse_height(_) -> not_a_height.
+
+extract_number(HeightStr) ->
+    list_to_integer(string:sub_string(HeightStr, 1, length(HeightStr) - 2)).
+
