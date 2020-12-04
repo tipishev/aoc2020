@@ -3,7 +3,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0]).
+-export([start_link/0, solve/2]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -34,6 +34,10 @@ start_link() ->
 %%--------------------------------------------------------------------
 init([]) ->
     {ok, #state{}}.
+
+
+solve(Pid, Day) ->
+    gen_server:call(Pid, {solve, Day}).
 
 %%--------------------------------------------------------------------
 %% Function: %% handle_call(Request, From, State) -> {reply, Reply, State} |
