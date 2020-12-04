@@ -107,7 +107,7 @@ within(Number, Min, Max) when Number >= Min, Number =< Max -> true;
 within(_, _, _) -> false.
 
 validate_eye_color(EyeColor) ->
-    lists:member(EyeColor, ["amb", "blu," "brn", "gry", "grn", "hzl", "oth"]).
+    lists:member(EyeColor, ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]).
 
 validate_passport_id(Pid) when length(Pid) =:= 9 ->
     ValidChars = sets:from_list("0123456789"),
@@ -120,7 +120,6 @@ validate_hair_color([$# | MaybeHex]) when length(MaybeHex) =:= 6 ->
     GivenChars = sets:from_list(MaybeHex),
     sets:is_subset(GivenChars, ValidChars);
 validate_hair_color(_) -> false.
-
 
 validate_height({cm, HeightValue}) -> within(HeightValue, 150, 193);
 validate_height({in, HeightValue}) -> within(HeightValue, 59, 76);
@@ -139,4 +138,3 @@ parse_height(_) -> not_a_height.
 
 extract_number(HeightStr) ->
     list_to_integer(string:sub_string(HeightStr, 1, length(HeightStr) - 2)).
-

@@ -118,5 +118,4 @@ solve_part2_test_() ->
 
      {"Valid Passports",
       ?_assertEqual(4, day4:solve_part2(?VALID_PASSPORTS))}
-
     ].
