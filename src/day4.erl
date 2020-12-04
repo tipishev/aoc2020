@@ -1,7 +1,9 @@
 -module(day4).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1, validate/1, parse_height/1]).
+
+% for tests
+-export([parse/1, validate/1, parse_height/1, validate2/1]).
 
 % LYSE suggests to keep records private to modules, no header files
 -record(passport, {byr, iyr, eyr, hgt, hcl, ecl, pid, cid}).
