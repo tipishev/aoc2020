@@ -22,9 +22,21 @@ solve(day2) ->
 solve(day3) ->
     Input = read_newline_separated_strings(day3),
     #solution{part1=day3:solve_part1(Input),
-              part2=day3:solve_part2(Input)}.
+              part2=day3:solve_part2(Input)};
+
+solve(day4) ->
+    Input = read(day4),
+    #solution{part1=day4:solve_part1(Input),
+              part2=day4:solve_part2(Input)}.
 
 %%% Helpers
+
+
+% let the custom parser handle the complex data
+read(Filename) ->
+    Fullpath = filename:join([?INPUTS_DIR, Filename]),
+    {ok, FileData} = file:read_file(Fullpath),
+    FileData.
 
 %% reads newline-separated integers from "inputs/Filename"
 -spec read_newline_separated_integers(day()) -> list(integer()).

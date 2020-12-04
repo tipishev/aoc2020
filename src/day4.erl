@@ -8,11 +8,13 @@
 
 %%% solution
 
-solve_part1(_Input) ->
-    undefined.
+solve_part1(Input) ->
+    Passports =  parse(Input),
+    length(lists:filter(fun validate/1, Passports)).
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Input) ->
+    Passports =  parse(Input),
+    length(lists:filter(fun validate2/1, Passports)).
 
 %%% internals
 
@@ -60,3 +62,41 @@ validate(#passport{byr=Byr, iyr=Iyr, eyr=Eyr, hgt=Hgt,
                                                             Pid =/= undefined ->
     true;
 validate(_) -> false.
+
+%%% part2
+
+validate2(#passport{byr=Byr, iyr=Iyr, eyr=Eyr, hgt=Hgt,
+                   hcl=Hcl, ecl=Ecl, pid=Pid, cid=_})  when Byr =/= undefined,
+                                                            Iyr =/= undefined,
+                                                            Eyr =/= undefined,
+                                                            Hgt =/= undefined,
+                                                            Hcl =/= undefined,
+                                                            Ecl =/= undefined,
+                                                            Pid =/= undefined ->
+    io:format("~p~n", [Hgt]),
+
+
+    BirthYear = list_to_integer(Byr),
+    IssueYear = list_to_integer(Iyr),
+    ExpirationYear = list_to_integer(Eyr),
+    {HeightUnits, HeightValue} = parse_height(Hgt),
+
+    BirthYear >= 1920 andalso BirthYear =< 2002
+    andalso IssueYear >= 2010 andalso IssueYear =< 2020
+    andalso ExpirationYear >= 2020 andalso ExpirationYear =< 2030
+    andalso (
+      (HeightUnits =:= cm andalso HeightValue >= 150 andalso HeightValue =< 193)
+      orelse
+      (HeightUnits =:= in andalso HeightValue >= 59 andalso HeightValue =< 76)
+     );
+validate2(_) ->
+    false.
+
+parse_height(HeightStr) ->
+    case string:split(HeightStr, "cm") of
+        [CmStrVal, []] ->
+            {cm, list_to_integer(CmStrVal)};
+        [InchStr] ->
+            [InchStrVal, []] = string:split(InchStr, "in"),
+            {in, list_to_integer(InchStrVal)}
+    end.
