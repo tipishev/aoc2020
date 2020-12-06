@@ -32,7 +32,11 @@ solve(day4) ->
 solve(day5) ->
     Input = read_newline_separated_strings(day5),
     #solution{part1=day5:solve_part1(Input),
-              part2=day5:solve_part2(Input)}.
+              part2=day5:solve_part2(Input)};
+solve(day6) ->
+    Input = read(day6),
+    #solution{part1=day6:solve_part1(Input),
+              part2=day6:solve_part2(Input)}.
 
 %%% Helpers
 
