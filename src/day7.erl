@@ -15,11 +15,12 @@ solve_part1(Input) ->
     UpstreamWithoutItself = lists:delete("shiny gold", UpstreamWithItself),
     length(UpstreamWithoutItself).
 
-
-
-
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Input) ->
+    Rules = parse(Input),
+    {Vertices, Edges} = extract_vertices_and_edges(Rules),
+    {Bags, ColorRegistry} = build_digraph(Vertices, Edges),
+    ShinyGoldVertex = maps:get("shiny gold", ColorRegistry),
+    sum_downstream_edges(Bags, ShinyGoldVertex) - 1.
 
 %%% internals
 
@@ -114,10 +115,27 @@ get_upstream_labels(Digraph, Vertex) ->
     % io:format("~p~n", [OwnLabel]),
     InNeighbours = digraph:in_neighbours(Digraph, Vertex),
     ListOfLists = [[OwnLabel] | [get_upstream_labels(Digraph, InNeighbour)
-                   || InNeighbour <-InNeighbours]],
+                   || InNeighbour <- InNeighbours]],
     WithDupes = lists:merge(ListOfLists),
     dedupe(WithDupes).
-    
+
+sum_downstream_edges(Digraph, Vertex) ->
+    OutEdges = digraph:out_edges(Digraph, Vertex),
+    case OutEdges =:= [] of
+        true ->
+            1;
+        false ->
+            Weights = lists:map(fun(OutEdge) ->
+                                    edge_total_weight(Digraph, OutEdge)
+                                end,
+                                OutEdges),
+            1 + lists:sum(Weights)
+    end.
+
+edge_total_weight(Digraph, Edge) ->
+    {Weight, Vertex} = extract_weight_and_vertex(Digraph, Edge),
+    Weight * sum_downstream_edges(Digraph, Vertex).
+
 
 %%% sillly utils
 dedupe([])    -> [];
@@ -126,3 +144,8 @@ dedupe([H|T]) -> [H | [X || X <- dedupe(T), X /= H]].
 extract_label(Digraph, Vertex) ->
     {Vertex, Label} = digraph:vertex(Digraph, Vertex),
     Label.
+
+extract_weight_and_vertex(Digraph, Edge) ->
+    {Edge, _VertexFrom, VertexTo, Weight} = digraph:edge(Digraph, Edge),
+    {Weight, VertexTo}.
+

@@ -39,3 +39,11 @@ part1_test_() ->
       ?_assertEqual(4, day7:solve_part1(?EXAMPLE))}
 
     ].
+
+part2_test_() ->
+    [
+
+     {"Example test",
+      ?_assertEqual(32, day7:solve_part2(?EXAMPLE))}
+
+    ].
