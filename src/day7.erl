@@ -7,14 +7,17 @@
 %%% solution
 
 solve_part1(Input) ->
-    parse(Input).
+    Rules = parse(Input),
+    {Vertices, Edges} = extract_vertices_and_edges(Rules),
+    Digraph = build_digraph(Vertices, Edges).
+
 
 solve_part2(_Input) ->
     undefined.
 
 %%% internals
 
-%%% Parse
+%%% Input Parsing
 
 parse(Input) ->
     Lines = string:lexemes(Input, "\n"),
@@ -43,7 +46,7 @@ parse_content(ContentStr) ->
 parse_content(["no"|_RestOfLine], _Content) ->
     [];
 parse_content([], Content) ->
-    lists:sort(Content);
+    lists:sort(Content);  % TODO adjust tests to avoid sorting
 parse_content([QuantityStr|ColorAndTail], Content) ->
     Quantity = list_to_integer(QuantityStr),
     {Color, Tail} = parse_color("", ColorAndTail),
@@ -51,46 +54,49 @@ parse_content([QuantityStr|ColorAndTail], Content) ->
 
 %%% Graph Building
 
-build_graph(BagLines) ->
+extract_vertices_and_edges(Rules) ->
+    Vertices = sets:new(),
+    Edges = [],
+    extract_vertices_and_edges(Rules, Vertices, Edges).
+
+extract_vertices_and_edges([], Vertices, Edges) ->
+    {sets:to_list(Vertices), Edges};
+extract_vertices_and_edges([Rule | OtherRules], Vertices, Edges) ->
+    {Color, Content} = Rule,
+    AdditionalEdges = generate_edges(Color, Content, _EdgesAcc=[]),
+    NewVertices = sets:add_element(Color, Vertices),
+    NewEdges = Edges ++ AdditionalEdges,   % TODO inefficient
+    extract_vertices_and_edges(OtherRules, NewVertices, NewEdges).
+
+generate_edges(_Color, [], EdgesAcc) ->
+    EdgesAcc;
+generate_edges(Color, [{AnotherColor, Quantity} | Tail], EdgesAcc) ->
+    generate_edges(Color, Tail, [{Color, AnotherColor, Quantity} | EdgesAcc]).
+
+
+build_digraph(Vertices, Edges) ->
+    % TODO combine both in a record to operate on
     Bags = digraph:new([acyclic]),
-    ColorRegistry = #{},
-    build_graph(Bags, BagLines, ColorRegistry).
+
+    % register all vertices
+    ColorRegistry = lists:foldl(
+                      fun(Color, Registry) ->
+                              add_vertex(Bags, Registry, Color)
+                      end, #{}, Vertices),
+
+    % create all the edges
+    _ = [add_edge(Bags, ColorRegistry, ParentLabel, ChildLabel, Quantity)
+         || {ParentLabel, ChildLabel, Quantity} <- Edges],
+    digraph:edges(Bags).
 
 
-build_graph(Bags, [], _ColorRegistry) ->
-    Bags;
-build_graph(Bags, [{Color, Content} | Tail], ColorRegistry) ->
-    {ParentVertex, NewColorRegistry} = get_vertex(Bags, Color, ColorRegistry),
-    [].
-    % % first line
-    % LightRed = add_vertex(Bags, "light red"),
-    % BrightWhite = add_vertex(Bags, "bright white"),
-    % MutedYellow = add_vertex(Bags, "muted yellow"),
-    % add_edge(Bags, LightRed, BrightWhite, 1),
-    % add_edge(Bags, LightRed, MutedYellow, 2),
-
-    % % second line
-    % DarkOrange = add_vertex(Bags, "dark orange"),
-    % add_edge(Bags, DarkOrange, BrightWhite, 3),
-    % add_edge(Bags, DarkOrange, MutedYellow, 4),
-    % Bags.
-
-% TODO deuglify with {or, [pattern matching, sugar, multiple heads]}
-get_vertex(Bags, ColorRegistry, Color) ->
-    case maps:is_key(Color, ColorRegistry) of
-        true ->
-           ExistingVertex = maps:get(Color, ColorRegistry),
-           {ExistingVertex, ColorRegistry};
-        false ->
-            NewVertex = add_vertex(Bags, Color),
-            NewColorRegistry = ColorRegistry#{Color=>NewVertex},
-            {NewVertex, NewColorRegistry}
-    end.
+% TODO deuglify with {$or, [pattern matching, sugar, multiple heads]}
+add_vertex(Digraph, VertexRegistry, Label) ->
+    Vertex = digraph:add_vertex(Digraph, digraph:add_vertex(Digraph), Label),
+    VertexRegistry#{Label=>Vertex}.
 
 
-add_vertex(Digraph, Label) ->
-    digraph:add_vertex(Digraph, digraph:add_vertex(Digraph), Label).
-
-add_edge(Digraph, ParentVertex, ChildVertex, Label) ->
+add_edge(Digraph, VertexRegistry, ParentLabel, ChildLabel, Label) ->
+    ParentVertex = maps:get(ParentLabel, VertexRegistry),
+    ChildVertex = maps:get(ChildLabel, VertexRegistry),
     digraph:add_edge(Digraph, ParentVertex, ChildVertex, Label).
-
