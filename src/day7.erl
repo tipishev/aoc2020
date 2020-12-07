@@ -49,26 +49,48 @@ parse_content([QuantityStr|ColorAndTail], Content) ->
     {Color, Tail} = parse_color("", ColorAndTail),
     parse_content(Tail, [{Color, Quantity}|Content]).
 
-build_graph(ParsedLines) ->
+%%% Graph Building
+
+build_graph(BagLines) ->
     Bags = digraph:new([acyclic]),
+    ColorRegistry = #{},
+    build_graph(Bags, BagLines, ColorRegistry).
 
-    % first line
-    LightRed = add_vertex(Bags, "light red"),
-    BrightWhite = add_vertex(Bags, "bright white"),
-    MutedYellow = add_vertex(Bags, "muted yellow"),
-    add_edge(Bags, LightRed, BrightWhite, 1),
-    add_edge(Bags, LightRed, MutedYellow, 2),
 
-    % second line
-    DarkOrange = add_vertex(Bags, "dark orange"),
-    add_edge(Bags, DarkOrange, BrightWhite, 3),
-    add_edge(Bags, DarkOrange, MutedYellow, 4),
-    Bags.
+build_graph(Bags, [], _ColorRegistry) ->
+    Bags;
+build_graph(Bags, [{Color, Content} | Tail], ColorRegistry) ->
+    {ParentVertex, NewColorRegistry} = get_vertex(Bags, Color, ColorRegistry),
+    [].
+    % % first line
+    % LightRed = add_vertex(Bags, "light red"),
+    % BrightWhite = add_vertex(Bags, "bright white"),
+    % MutedYellow = add_vertex(Bags, "muted yellow"),
+    % add_edge(Bags, LightRed, BrightWhite, 1),
+    % add_edge(Bags, LightRed, MutedYellow, 2),
+
+    % % second line
+    % DarkOrange = add_vertex(Bags, "dark orange"),
+    % add_edge(Bags, DarkOrange, BrightWhite, 3),
+    % add_edge(Bags, DarkOrange, MutedYellow, 4),
+    % Bags.
+
+% TODO deuglify with {or, [pattern matching, sugar, multiple heads]}
+get_vertex(Bags, ColorRegistry, Color) ->
+    case maps:is_key(Color, ColorRegistry) of
+        true ->
+           ExistingVertex = maps:get(Color, ColorRegistry),
+           {ExistingVertex, ColorRegistry};
+        false ->
+            NewVertex = add_vertex(Bags, Color),
+            NewColorRegistry = ColorRegistry#{Color=>NewVertex},
+            {NewVertex, NewColorRegistry}
+    end.
 
 
 add_vertex(Digraph, Label) ->
     digraph:add_vertex(Digraph, digraph:add_vertex(Digraph), Label).
 
-add_edge(Digraph, Vertex1, Vertex2, Label) ->
-    digraph:add_edge(Digraph, Vertex1, Vertex2, Label).
+add_edge(Digraph, ParentVertex, ChildVertex, Label) ->
+    digraph:add_edge(Digraph, ParentVertex, ChildVertex, Label).
 
