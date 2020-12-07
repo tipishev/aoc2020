@@ -36,6 +36,6 @@ part1_test_() ->
     [
 
      {"Example test",
-      ?_assertEqual(undefined, day7:solve_part1(?EXAMPLE))}
+      ?_assertEqual(4, day7:solve_part1(?EXAMPLE))}
 
     ].

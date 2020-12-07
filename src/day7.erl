@@ -9,7 +9,13 @@
 solve_part1(Input) ->
     Rules = parse(Input),
     {Vertices, Edges} = extract_vertices_and_edges(Rules),
-    Digraph = build_digraph(Vertices, Edges).
+    {Bags, ColorRegistry} = build_digraph(Vertices, Edges),
+    ShinyGoldVertex = maps:get("shiny gold", ColorRegistry),
+    UpstreamWithItself = get_upstream_labels(Bags, ShinyGoldVertex),
+    UpstreamWithoutItself = lists:delete("shiny gold", UpstreamWithItself),
+    length(UpstreamWithoutItself).
+
+
 
 
 solve_part2(_Input) ->
@@ -75,8 +81,8 @@ generate_edges(Color, [{AnotherColor, Quantity} | Tail], EdgesAcc) ->
 
 
 build_digraph(Vertices, Edges) ->
-    % TODO combine both in a record to operate on
-    Bags = digraph:new([acyclic]),
+    % TODO combine Bags and ColorRegistry in a record?
+    Bags = digraph:new([acyclic]),  % mutable AF
 
     % register all vertices
     ColorRegistry = lists:foldl(
@@ -87,7 +93,7 @@ build_digraph(Vertices, Edges) ->
     % create all the edges
     _ = [add_edge(Bags, ColorRegistry, ParentLabel, ChildLabel, Quantity)
          || {ParentLabel, ChildLabel, Quantity} <- Edges],
-    digraph:edges(Bags).
+    {Bags, ColorRegistry}.
 
 
 % TODO deuglify with {$or, [pattern matching, sugar, multiple heads]}
@@ -100,3 +106,23 @@ add_edge(Digraph, VertexRegistry, ParentLabel, ChildLabel, Label) ->
     ParentVertex = maps:get(ParentLabel, VertexRegistry),
     ChildVertex = maps:get(ChildLabel, VertexRegistry),
     digraph:add_edge(Digraph, ParentVertex, ChildVertex, Label).
+
+%%% Graph Operations
+
+get_upstream_labels(Digraph, Vertex) ->
+    OwnLabel = extract_label(Digraph, Vertex),
+    % io:format("~p~n", [OwnLabel]),
+    InNeighbours = digraph:in_neighbours(Digraph, Vertex),
+    ListOfLists = [[OwnLabel] | [get_upstream_labels(Digraph, InNeighbour)
+                   || InNeighbour <-InNeighbours]],
+    WithDupes = lists:merge(ListOfLists),
+    dedupe(WithDupes).
+    
+
+%%% sillly utils
+dedupe([])    -> [];
+dedupe([H|T]) -> [H | [X || X <- dedupe(T), X /= H]].
+
+extract_label(Digraph, Vertex) ->
+    {Vertex, Label} = digraph:vertex(Digraph, Vertex),
+    Label.

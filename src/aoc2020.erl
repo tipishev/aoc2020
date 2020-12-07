@@ -36,7 +36,12 @@ solve(day5) ->
 solve(day6) ->
     Input = read(day6),
     #solution{part1=day6:solve_part1(Input),
-              part2=day6:solve_part2(Input)}.
+              part2=day6:solve_part2(Input)};
+
+solve(day7) ->
+    Input = binary_to_list(read(day7)),
+    #solution{part1=day7:solve_part1(Input),
+              part2=day7:solve_part2(Input)}.
 
 %%% Helpers
 
