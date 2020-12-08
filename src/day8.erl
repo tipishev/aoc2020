@@ -3,7 +3,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % for tests
--export([parse/1, detect_loop/1, fix/1, mutate/1]).
+-export([parse/1, detect_loop/1, fix/1]).
 
 %%% solution
 
@@ -82,7 +82,6 @@ detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
         true -> {loops, Acc};
         false ->
             NewVisited = sets:add_element(CurrentInstruction, Visited),
-            io:format("~p,~p~n", [CurrentInstruction, length(Instructions)]),
             {Operation, Argument} = lists:nth(CurrentInstruction,
                                               Instructions),
             case Operation of
@@ -107,41 +106,26 @@ detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
       Acc :: integer().
 
 fix(Instructions) ->
-    fix2(mutate(Instructions)).
+    fix(Instructions, _Current=1).
 
-fix2([]) -> ran_out_of_mutations;
-fix2([Mutation | TailMutations]) ->
-    case detect_loop(Mutation) of
-        {loops, _Acc} -> detect_loop(TailMutations);
-        {halts, Acc} -> Acc
+-spec fix(Instructions, Current) ->
+    Acc when
+      Instructions :: instructions(),
+      Current :: pos_integer(),
+      Acc :: integer().
+
+fix(Instructions, Current) ->
+    Mutated = replace(Instructions, Current),
+    case detect_loop(Mutated) of 
+        {halts, Val} -> Val;
+        {loops, _Val} -> fix(Instructions, Current + 1)
     end.
 
-
-%% Creates a list of altenative instructions with exactly
-%% one nop/jmp swapped to jmp/nop respectively
--spec mutate(Instructions) ->
-    AlternativeInstructions when
-      Instructions :: instructions(),
-      AlternativeInstructions :: [instructions()].
-
-
-mutate(Instructions) ->
-    mutate(_Seen=[], _Unseen=Instructions, _Mutations=[]).
-
--spec mutate(Seen, Unseen, Mutations) ->
-    FinalMutations when
-      Seen :: instructions(),
-      Unseen :: instructions(),
-      Mutations :: [instructions()],
-
-      FinalMutations :: [instructions()].
-
-mutate(_Seen, _Unseen=[], Mutations) -> Mutations;
-mutate(Seen, [Current={nop, Arg} | Tail], Mutations) ->
-    Mutation = Seen ++ [{jmp, Arg} | Tail],
-    mutate(Seen ++ [Current], Tail, [Mutation | Mutations]);
-mutate(Seen, [Current={jmp, Arg} | Tail], Mutations) ->
-    Mutation = Seen ++ [{nop, Arg} | Tail],
-    mutate(Seen ++ [Current], Tail, [Mutation | Mutations]);
-mutate(Seen, [Current | Tail], Mutations) ->
-    mutate(Seen ++ [Current], Tail, Mutations).
+replace(Instructions, Index) ->
+    Instruction = lists:nth(Index, Instructions),
+    Replacement = case Instruction of
+        {nop, Arg} -> {jmp, Arg}; 
+        {jmp, Arg} -> {nop, Arg}; 
+        Any -> Any
+    end,
+    lists:sublist(Instructions, Index - 1) ++ [Replacement] ++ lists:nthtail(Index, Instructions).

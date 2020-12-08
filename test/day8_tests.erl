@@ -40,19 +40,6 @@ part1_test_() ->
 
     ].
 
-mutate_test_() ->
-    [
-
-     {"Generate simple alternatives",
-      ?_assertEqual(
-         [
-          [{nop, 1}, {nop, 2}],
-          [{jmp, 1}, {jmp, 2}]
-         ],
-         day8:mutate([{nop, 1}, {jmp, 2}]))}
-
-    ].
-
 part2_test_() ->
     [
 
