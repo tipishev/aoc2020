@@ -3,7 +3,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % for tests
--export([parse/1, detect_loop/1, fix/1]).
+-export([parse/1, detect_loop/1, fix/1, mutate/1]).
 
 %%% solution
 
@@ -55,7 +55,6 @@ parse_line(Line) ->
 %%% Part 1
 
 %% detects the value of accumulator before running a repeating command
-
 -type behaviour() :: halts | loops.
 -spec detect_loop(Instructions) ->
     DetectionResult when
@@ -107,3 +106,32 @@ detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
 
 fix(_) ->
     8.
+
+%% Creates a list of altenative instructions with exactly
+%% one nop/jmp swapped to jmp/nop respectively
+-spec mutate(Instructions) ->
+    AlternativeInstructions when
+      Instructions :: instructions(),
+      AlternativeInstructions :: [instructions()].
+
+
+mutate(Instructions) ->
+    mutate(_Seen=[], _Unseen=Instructions, _Mutations=[]).
+
+-spec mutate(Seen, Unseen, Mutations) ->
+    FinalMutations when
+      Seen :: instructions(),
+      Unseen :: instructions(),
+      Mutations :: [instructions()],
+
+      FinalMutations :: [instructions()].
+
+mutate(_Seen, _Unseen=[], Mutations) -> Mutations;
+mutate(Seen, [Current={nop, Arg} | Tail], Mutations) ->
+    Mutation = Seen ++ [{jmp, Arg} | Tail],
+    mutate(Seen ++ [Current], Tail, [Mutation | Mutations]);
+mutate(Seen, [Current={jmp, Arg} | Tail], Mutations) ->
+    Mutation = Seen ++ [{nop, Arg} | Tail],
+    mutate(Seen ++ [Current], Tail, [Mutation | Mutations]);
+mutate(Seen, [Current | Tail], Mutations) ->
+    mutate(Seen ++ [Current], Tail, Mutations).
