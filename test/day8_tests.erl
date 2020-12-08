@@ -12,19 +12,29 @@ acc +1
 jmp -4
 acc +6").
 
+-define(EXAMPLE_INSTRUCTIONS,
+	[{nop,0},
+	 {acc,1},
+	 {jmp,4},
+	 {acc,3},
+	 {jmp,-3},
+	 {acc,-99},
+	 {acc,1},
+	 {jmp,-4},
+	 {acc,6}]).
+
 parse_test_() ->
     [
 
-     {"Example test",
-      ?_assertEqual(
-         [{nop,0},
-          {acc,1},
-          {jmp,4},
-          {acc,3},
-          {jmp,-3},
-          {acc,-99},
-          {acc,1},
-          {jmp,-4},
-          {acc,6}], day8:parse(?EXAMPLE))}
+     {"Parse example input",
+      ?_assertEqual(?EXAMPLE_INSTRUCTIONS, day8:parse(?EXAMPLE))}
+
+    ].
+
+
+part1_test_() ->
+    [
+     {"Part 1 example",
+      ?_assertEqual(5, day8:detect_loop(?EXAMPLE_INSTRUCTIONS))}
 
     ].

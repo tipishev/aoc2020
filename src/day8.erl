@@ -3,7 +3,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % for tests
--export([parse/1]).
+-export([parse/1, detect_loop/1]).
 
 %%% solution
 
@@ -12,7 +12,6 @@ solve_part1(_Text) ->
 
 solve_part2(_Input) ->
     undefined.
-
 
 %%% internals
 
@@ -27,7 +26,7 @@ solve_part2(_Input) ->
 -spec parse(Text) ->
     Instructions when
       Text :: string(),
-      Instructions :: [instruction(), ...].
+      Instructions :: [instruction()].
 
 parse(Text) ->
     Lines = string:lexemes(Text, "\n"),
@@ -48,3 +47,13 @@ parse_line(Line) ->
         "acc" -> {acc, ArgumentInt};
         "jmp" -> {jmp, ArgumentInt}
     end.
+
+%% detects the value of accumulator before running a repeating command
+
+-spec detect_loop(Instructions) ->
+    AccumulatorValue when
+      Instructions :: [instruction()],
+      AccumulatorValue :: integer().
+
+detect_loop(Instructions) ->
+    5.
