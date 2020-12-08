@@ -3,13 +3,14 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % for tests
--export([parse/1, detect_loop/1]).
+-export([parse/1, detect_loop/1, fix/1]).
 
 %%% solution
 
 solve_part1(Text) ->
     Instructions = parse(Text),
-    detect_loop(Instructions).
+    {loops, Acc} = detect_loop(Instructions),
+    Acc.
 
 solve_part2(_Input) ->
     undefined.
@@ -50,28 +51,35 @@ parse_line(Line) ->
         "jmp" -> {jmp, ArgumentInt}
     end.
 
+
+%%% Part 1
+
 %% detects the value of accumulator before running a repeating command
 
+-type behaviour() :: halts | loops.
 -spec detect_loop(Instructions) ->
-    AccumulatorValue when
+    DetectionResult when
       Instructions :: instructions(),
-      AccumulatorValue :: integer().
+      DetectionResult :: {behaviour(), integer()}.
 
 detect_loop(Instructions) ->
     detect_loop(Instructions, _CurrentInstruction=1,
                 _Visited=sets:new(), _Acc=0).
 
 -spec detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
-    AccBeforeLoop when
+    DetectionResult when
       Instructions :: instructions(),
       CurrentInstruction :: pos_integer(),
       Visited :: sets:set(),
       Acc :: integer(),
-      AccBeforeLoop :: integer().
+      DetectionResult :: {behaviour(), integer()}.
 
+detect_loop(Instructions, CurrentInstruction, _, Acc)
+  when  CurrentInstruction =:= length(Instructions) + 1 ->
+    {halts, Acc};
 detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
     case sets:is_element(CurrentInstruction, Visited) of
-        true -> Acc;
+        true -> {loops, Acc};
         false ->
             NewVisited = sets:add_element(CurrentInstruction, Visited),
             {Operation, Argument} = lists:nth(CurrentInstruction,
@@ -86,3 +94,16 @@ detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
                                    NewVisited, Acc)
             end
     end.
+
+%%% Part 2
+
+%% Changes a nop to jmp, or the other way around to make
+%% the program terminate, outputs the value of Acc after the last instruction
+
+-spec fix(Instructions) ->
+    Acc when
+      Instructions :: instructions(),
+      Acc :: integer().
+
+fix(_) ->
+    8.

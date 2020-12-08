@@ -34,7 +34,16 @@ parse_test_() ->
 
 part1_test_() ->
     [
+
      {"Part 1 example",
-      ?_assertEqual(5, day8:detect_loop(?EXAMPLE_INSTRUCTIONS))}
+      ?_assertEqual({loops, 5}, day8:detect_loop(?EXAMPLE_INSTRUCTIONS))}
+
+    ].
+
+part2_test_() ->
+    [
+
+     {"Part 2 example",
+      ?_assertEqual(8, day8:fix(?EXAMPLE_INSTRUCTIONS))}
 
     ].
