@@ -51,7 +51,6 @@ mutate_test_() ->
          ],
          day8:mutate([{nop, 1}, {jmp, 2}]))}
 
-
     ].
 
 part2_test_() ->

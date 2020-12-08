@@ -12,8 +12,9 @@ solve_part1(Text) ->
     {loops, Acc} = detect_loop(Instructions),
     Acc.
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Text) ->
+    Instructions = parse(Text),
+    fix(Instructions).
 
 %%% internals
 
@@ -81,6 +82,7 @@ detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
         true -> {loops, Acc};
         false ->
             NewVisited = sets:add_element(CurrentInstruction, Visited),
+            io:format("~p,~p~n", [CurrentInstruction, length(Instructions)]),
             {Operation, Argument} = lists:nth(CurrentInstruction,
                                               Instructions),
             case Operation of
@@ -104,8 +106,16 @@ detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
       Instructions :: instructions(),
       Acc :: integer().
 
-fix(_) ->
-    8.
+fix(Instructions) ->
+    fix2(mutate(Instructions)).
+
+fix2([]) -> ran_out_of_mutations;
+fix2([Mutation | TailMutations]) ->
+    case detect_loop(Mutation) of
+        {loops, _Acc} -> detect_loop(TailMutations);
+        {halts, Acc} -> Acc
+    end.
+
 
 %% Creates a list of altenative instructions with exactly
 %% one nop/jmp swapped to jmp/nop respectively
