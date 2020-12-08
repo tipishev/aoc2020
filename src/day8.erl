@@ -7,8 +7,9 @@
 
 %%% solution
 
-solve_part1(_Text) ->
-    undefined.
+solve_part1(Text) ->
+    Instructions = parse(Text),
+    detect_loop(Instructions).
 
 solve_part2(_Input) ->
     undefined.
@@ -22,11 +23,12 @@ solve_part2(_Input) ->
 -type operation() :: nop | acc | jmp.
 -type argument() :: integer().
 -type instruction() :: {operation(), argument()}.
+-type instructions() :: [instruction()].
 
 -spec parse(Text) ->
     Instructions when
       Text :: string(),
-      Instructions :: [instruction()].
+      Instructions :: instructions().
 
 parse(Text) ->
     Lines = string:lexemes(Text, "\n"),
@@ -52,8 +54,35 @@ parse_line(Line) ->
 
 -spec detect_loop(Instructions) ->
     AccumulatorValue when
-      Instructions :: [instruction()],
+      Instructions :: instructions(),
       AccumulatorValue :: integer().
 
 detect_loop(Instructions) ->
-    5.
+    detect_loop(Instructions, _CurrentInstruction=1,
+                _Visited=sets:new(), _Acc=0).
+
+-spec detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
+    AccBeforeLoop when
+      Instructions :: instructions(),
+      CurrentInstruction :: pos_integer(),
+      Visited :: sets:set(),
+      Acc :: integer(),
+      AccBeforeLoop :: integer().
+
+detect_loop(Instructions, CurrentInstruction, Visited, Acc) ->
+    case sets:is_element(CurrentInstruction, Visited) of
+        true -> Acc;
+        false ->
+            NewVisited = sets:add_element(CurrentInstruction, Visited),
+            {Operation, Argument} = lists:nth(CurrentInstruction,
+                                              Instructions),
+            case Operation of
+                nop -> detect_loop(Instructions, CurrentInstruction + 1,
+                                   NewVisited, Acc);
+                acc -> detect_loop(Instructions, CurrentInstruction + 1,
+                                   NewVisited, Acc + Argument);
+                jmp -> detect_loop(Instructions,
+                                   CurrentInstruction + Argument,
+                                   NewVisited, Acc)
+            end
+    end.
