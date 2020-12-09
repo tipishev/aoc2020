@@ -49,9 +49,9 @@ solve(day8) ->
               part2=day8:solve_part2(Input)};
 
 solve(day9) ->
-    Input = binary_to_list(read(day8)),
-    #solution{part1=day8:solve_part1(Input),
-              part2=day8:solve_part2(Input)}.
+    Input = read_newline_separated_integers(day9),
+    #solution{part1=day9:solve_part1(Input),
+              part2=day9:solve_part2(Input)}.
 %%% Helpers
 
 
