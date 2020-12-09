@@ -12,3 +12,11 @@ part1_test_() ->
       ?_assertEqual(127, day9:check_xmas(?EXAMPLE, 5))}
 
     ].
+
+part2_test_() ->
+    [
+
+     {"Example test",
+      ?_assertEqual({15, 47}, day9:find_weakness(?EXAMPLE, 127))}
+
+    ].
