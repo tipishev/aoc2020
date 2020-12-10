@@ -15,7 +15,10 @@ solve_part2(BagAdapters) ->
     Outlet = 0,
     Device = lists:max(BagAdapters) + 3, 
     Joltages = [Outlet, Device | BagAdapters],
-    _Digraph = build_digraph(Joltages).
+    {digraph, Digraph,
+     source, Source,
+     sink, Sink} = build_digraph(Joltages),
+    count_paths(Digraph, Source, Sink).
 
 % Part1
 
@@ -45,7 +48,10 @@ count([H|T], Counter) ->
 build_digraph(Joltages) ->
     Digraph = digraph:new([acyclic]),
     VertexRegistry = add_vertices(Digraph, _Labels=Joltages),
-    add_edges(Digraph, VertexRegistry).
+    _ = add_edges(Digraph, VertexRegistry),
+    Source = maps:get(lists:min(Joltages), VertexRegistry),
+    Sink = maps:get(lists:max(Joltages), VertexRegistry),
+    {digraph, Digraph, source, Source, sink, Sink}.
 
 %% Adds vertices to the digraph and returns {label:vertex} registry 
 add_vertices(Digraph, Labels) ->
@@ -61,13 +67,13 @@ add_vertex(Digraph, Label) ->
 
 %% connects vertices whose values differ no more than by 3
 add_edges(Digraph, VertexRegistry) ->
-    {Labels, _} = lists:unzip(maps:to_list(VertexRegistry)),
-    Edges = generate_edges(Labels, []),
+    {Labels, _Vertices} = lists:unzip(
+                            maps:to_list(VertexRegistry)),
+    Edges = generate_edges(lists:sort(Labels), []),
     _ = [digraph:add_edge( Digraph,
                            maps:get(V1, VertexRegistry), 
                            maps:get(V2, VertexRegistry))
-         || {V1, V2} <- Edges],
-    Digraph.
+         || {V1, V2} <- Edges].
 
 % final check
 generate_edges([Suitor, Sink], Edges) ->
@@ -85,4 +91,12 @@ generate_edges([Suitor, A, B, C | Tail], Edges) ->
 
 check(Small, Big) when (Big - Small) =< 3 -> {Small, Big};
 check(_, _) -> [].  % flatten will remove these
+
+count_paths(_, Source, Source) -> 1;
+count_paths(Digraph, Source, Vertex) ->
+    UpstreamNeighbours = digraph:in_neighbours(Digraph, Vertex),
+    lists:sum([count_paths(Digraph, Source, Neighbour)
+              || Neighbour <- UpstreamNeighbours]).
+
+
 

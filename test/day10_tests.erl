@@ -28,11 +28,11 @@ part2_test_() ->
     [
 
      {"Small example",
-      ?_assertEqual(undefined,
+      ?_assertEqual(8,
                     day10:solve_part2(?SMALL_EXAMPLE))}
 
-     % ,{"Larger example",
-     %  ?_assertEqual(19208,
-     %                day10:count_arrangements(?LARGER_EXAMPLE))}
+     ,{"Larger example",
+      ?_assertEqual(19208,
+                    day10:solve_part2(?LARGER_EXAMPLE))}
 
     ].
