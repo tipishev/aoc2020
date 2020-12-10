@@ -19,3 +19,16 @@ part1_test_() ->
                     day10:jolt_diff_distro(?LARGER_EXAMPLE))}
 
     ].
+
+part2_test_() ->
+    [
+
+     {"Small example",
+      ?_assertEqual(8,
+                    day10:count_arrangements(?SMALL_EXAMPLE))}
+
+     ,{"Larger example",
+      ?_assertEqual(19208,
+                    day10:count_arrangements(?LARGER_EXAMPLE))}
+
+    ].

@@ -51,7 +51,12 @@ solve(day8) ->
 solve(day9) ->
     Input = read_newline_separated_integers(day9),
     #solution{part1=day9:solve_part1(Input),
-              part2=day9:solve_part2(Input)}.
+              part2=day9:solve_part2(Input)};
+
+solve(day10) ->
+    Input = read_newline_separated_integers(day10),
+    #solution{part1=day10:solve_part1(Input),
+              part2=day10:solve_part2(Input)}.
 %%% Helpers
 
 
