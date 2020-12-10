@@ -7,11 +7,15 @@
 %%% solution
 
 solve_part1(BagAdapters) ->
-    [{1, A}, {3, B}] = jolt_diff_distro(BagAdapters),
-    A * B.
+    [{1, OnesCount},
+     {3, ThreesCount}] = jolt_diff_distro(BagAdapters),
+    OnesCount * ThreesCount.
 
 solve_part2(BagAdapters) ->
-    count_arrangemets(BagAdapters).
+    Outlet = 0,
+    Device = lists:max(BagAdapters) + 3, 
+    Joltages = [Outlet, Device | BagAdapters],
+    _Digraph = build_digraph(Joltages).
 
 % Part1
 
@@ -36,9 +40,49 @@ count([H|T], Counter) ->
 
 % Part2
 
-count_arrangements(BagAdapters) ->
-    Outlet = 0,
-    Device = lists:max(BagAdapters) + 3,
-    AllVertices = lists:sort([Outlet, Device | BagAdapters]),
-    Digraph = build_digraph(AllVertices),
-    path_count(Outlet, Device).
+% adds vertex for each number, creates edge A->B
+% if (B - A) <= 3
+build_digraph(Joltages) ->
+    Digraph = digraph:new([acyclic]),
+    VertexRegistry = add_vertices(Digraph, _Labels=Joltages),
+    add_edges(Digraph, VertexRegistry).
+
+%% Adds vertices to the digraph and returns {label:vertex} registry 
+add_vertices(Digraph, Labels) ->
+    lists:foldl(
+      fun(Label, VertexRegistry) ->
+          VertexRegistry#{Label => add_vertex(Digraph, Label)}
+      end, #{}, Labels).
+
+%% Adds a labelled vertex to Digraph
+add_vertex(Digraph, Label) ->
+    Vertex = digraph:add_vertex(Digraph),
+    digraph:add_vertex(Digraph, Vertex, Label).
+
+%% connects vertices whose values differ no more than by 3
+add_edges(Digraph, VertexRegistry) ->
+    {Labels, _} = lists:unzip(maps:to_list(VertexRegistry)),
+    Edges = generate_edges(Labels, []),
+    _ = [digraph:add_edge( Digraph,
+                           maps:get(V1, VertexRegistry), 
+                           maps:get(V2, VertexRegistry))
+         || {V1, V2} <- Edges],
+    Digraph.
+
+% final check
+generate_edges([Suitor, Sink], Edges) ->
+    lists:flatten([check(Suitor, Sink) | Edges]);
+% pre-final check
+generate_edges([Suitor, A, Sink], Edges) ->
+    NewEdges = [check(Suitor, A), check(Suitor, Sink) | Edges],
+    generate_edges([A, Sink], NewEdges); 
+% common case, at least 4 elements in list
+generate_edges([Suitor, A, B, C | Tail], Edges) ->
+    NewEdges = [check(Suitor, A),
+                check(Suitor, B),
+                check(Suitor, C) | Edges],
+    generate_edges([A, B, C | Tail], NewEdges).
+
+check(Small, Big) when (Big - Small) =< 3 -> {Small, Big};
+check(_, _) -> [].  % flatten will remove these
+
