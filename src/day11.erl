@@ -3,7 +3,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % could be shielded with IFDEF(?TEST) macro
--export([life/1, adjacent/2]).
+-export([parse/1, life/1, adjacent/2]).
 
 % -define(MAX_X, 10).
 % -define(MAX_Y, 10).
@@ -16,13 +16,19 @@ solve_part1(_Input) ->
 solve_part2(_Input) ->
     undefined.
 
-life(Board) ->
-    parse(Board).
+life(BoardStr) ->
+    parse(BoardStr).
 
-parse(Board) ->
-    Lines = string:lexemes(Board, "\n"),
-    FirstLine = lists:nth(1, Lines),
-    {length(Lines), length(FirstLine)}.
+parse(BoardStr) ->
+    Lines = string:lexemes(BoardStr, "\n"),
+    [parse_line(Line) || Line <- Lines].
+
+parse_line(Line) ->
+    [parse_symbol(Symbol) || Symbol <- Line].
+
+parse_symbol($.) -> floor;
+parse_symbol($L) -> seat;
+parse_symbol($#) -> occupied.
 
 %% adjacent coordinates, sorted
 adjacent({MaxX, MaxY}, {X, Y}) ->

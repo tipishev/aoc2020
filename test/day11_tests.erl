@@ -75,13 +75,13 @@ L.#.L..#..
 #.#L#L#.##").
 
 
-part1_test_() ->
-    [
+% part1_test_() ->
+%     [
 
-     {"Example test",
-      ?_assertEqual(?GEN1, day11:life(?GEN0))}
+%      {"Example test",
+%       ?_assertEqual(?GEN1, day11:life(?GEN0))}
 
-    ].
+%     ].
 
 adjacent_test_() ->
     [
@@ -125,5 +125,21 @@ adjacent_test_() ->
                      {3, 1}, {3, 2}, {3, 3}
                     ],
                     day11:adjacent({3, 3}, {2, 2}))}
+
+    ].
+
+
+parse_test_() ->
+    [
+
+     {"Parse a simple board string",
+      ?_assertEqual(
+         [
+          [seat, floor],
+          [floor, occupied]
+         ],
+         day11:parse(
+"L.
+.#"))}
 
     ].
