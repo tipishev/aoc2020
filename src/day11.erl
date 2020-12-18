@@ -30,7 +30,7 @@ adjacent({MaxX, MaxY}, {X, Y}) ->
      {AdjX, AdjY} ||
      AdjX <- [X - 1, X, X + 1],
      AdjY <- [Y - 1, Y, Y + 1],
-     {AdjX, AdjY} =/= {X, Y},  % itself is not adjacent
+     {AdjX, AdjY} =/= {X, Y},  % self is not adjacent
      AdjX > 0, AdjY > 0,
      AdjX =< MaxX, AdjY =< MaxY
     ]).
