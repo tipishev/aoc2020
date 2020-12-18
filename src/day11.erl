@@ -1,12 +1,15 @@
+%% @author Timofey Tipishev <tipishev@gmail.com>
+%% @doc This is AOC2020 <em>day11</em> solution
+%% @reference <a href="https://adventofcode.com/2020/day/11">AOC 2020 day 11</a> for
+%% @since 2020-12-18
+%% @version 0.5.0
+
 -module(day11).
 
 -export([solve_part1/1, solve_part2/1]).
 
-% could be shielded with IFDEF(?TEST) macro
+% could be shielded with -ifdef(TEST) macro
 -export([parse/1, life/1, adjacent/2]).
-
-% -define(MAX_X, 10).
-% -define(MAX_Y, 10).
 
 %%% solution
 
@@ -16,11 +19,22 @@ solve_part1(_Input) ->
 solve_part2(_Input) ->
     undefined.
 
-life(BoardStr) ->
-    parse(BoardStr).
+life(GridStr) ->
+    parse(GridStr).
 
-parse(BoardStr) ->
-    Lines = string:lexemes(BoardStr, "\n"),
+-type tile() :: floor | seat | occupied.
+-type grid() :: [[tile(), ...], ...].
+-spec parse(GridStr) -> Grid when
+      GridStr :: string(),
+      Grid :: grid().
+%% @doc Convert Grid string to Grid.
+%% @param GridStr string in the format of task input.
+%% @returns is a double-list of atoms floor, seat,
+%% @throws shadows.
+%% and occupied.
+
+parse(GridStr) ->
+    Lines = string:lexemes(GridStr, "\n"),
     [parse_line(Line) || Line <- Lines].
 
 parse_line(Line) ->
