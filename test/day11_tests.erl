@@ -60,8 +60,7 @@ L.L.L..#..
 ..L.L.....
 #L#LLLL#L#
 #.LLLLLL.L
-#.#L#L#.##"
-).
+#.#L#L#.##").
 
 -define(GEN5,
 "#.#L.L#.##
@@ -73,8 +72,7 @@ L.#.L..#..
 ..L.L.....
 #L#L##L#L#
 #.LLLLLL.L
-#.#L#L#.##"
-).
+#.#L#L#.##").
 
 
 part1_test_() ->
@@ -82,5 +80,50 @@ part1_test_() ->
 
      {"Example test",
       ?_assertEqual(?GEN1, day11:life(?GEN0))}
+
+    ].
+
+adjacent_test_() ->
+    [
+
+     {"Corner test
+
+      *..
+      ...
+      ...
+
+      ",
+      ?_assertEqual([
+                     {1, 2},
+                     {2, 1}, {2, 2}
+                    ],
+                    day11:adjacent({3, 3}, {1, 1}))},
+
+     {"Corner test
+
+      .*.
+      ...
+      ...
+
+      ",
+      ?_assertEqual([
+                     {1, 1}, {1, 3},
+                     {2, 1}, {2, 2}, {2, 3}
+                    ],
+                    day11:adjacent({3, 3}, {1, 2}))},
+
+     {"Center test
+
+      ...
+      .*.
+      ...
+
+      ",
+      ?_assertEqual([
+                     {1, 1}, {1, 2}, {1, 3},
+                     {2, 1}, {2, 3},
+                     {3, 1}, {3, 2}, {3, 3}
+                    ],
+                    day11:adjacent({3, 3}, {2, 2}))}
 
     ].

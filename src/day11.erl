@@ -1,7 +1,12 @@
 -module(day11).
 
 -export([solve_part1/1, solve_part2/1]).
--export([life/1]).
+
+% could be shielded with IFDEF(?TEST) macro
+-export([life/1, adjacent/2]).
+
+% -define(MAX_X, 10).
+% -define(MAX_Y, 10).
 
 %%% solution
 
@@ -18,3 +23,7 @@ parse(Board) ->
     Lines = string:lexemes(Board, "\n"),
     FirstLine = lists:nth(1, Lines),
     {length(Lines), length(FirstLine)}.
+
+%% adjacent coordinates, sorted
+adjacent({MaxX, MaxY}, {X, Y}) ->
+    undefined
