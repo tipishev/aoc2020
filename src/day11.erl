@@ -26,4 +26,11 @@ parse(Board) ->
 
 %% adjacent coordinates, sorted
 adjacent({MaxX, MaxY}, {X, Y}) ->
-    undefined
+    lists:sort([
+     {AdjX, AdjY} ||
+     AdjX <- [X - 1, X, X + 1],
+     AdjY <- [Y - 1, Y, Y + 1],
+     {AdjX, AdjY} =/= {X, Y},  % itself is not adjacent
+     AdjX > 0, AdjY > 0,
+     AdjX =< MaxX, AdjY =< MaxY
+    ]).
