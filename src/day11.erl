@@ -60,14 +60,17 @@ adjacent({MaxX, MaxY}, {X, Y}) ->
       X :: integer(),
       Y :: integer(),
       Tile :: tile().
-%% @doc Shows what is at coordinates {X, Y}
+%% @doc Shows what is at coordinates {X, Y}.
 at(Grid, {X, Y}) ->
     lists:nth(Y, lists:nth(X, Grid)).
 
-%% @doc Produces the next generation tile at {X, Y}
+%% @doc Measures X, Y dimensions of the Grid.
+dimensions(Grid) ->
+    {length(Grid), length(lists:nth(1, Grid))}.
+
+%% @doc Produces the next generation tile at {X, Y}.
 next(Grid, {X, Y}) ->
-    MaxX = length(Grid),
-    MaxY = length(lists:nth(1, Grid)),
+    {MaxX, MaxY} = dimensions(Grid),
     Tile = at(Grid, {X, Y}),
     Adjacent = [at(Grid, {AdjX, AdjY})
                 || {AdjX, AdjY} <- adjacent({MaxX, MaxY},
@@ -88,10 +91,9 @@ next2(occupied, Adjacent) ->
 
 count(Needle, Haystack) ->
     lists:foldl(
-      fun(El, Acc) ->
-              case El =:= Needle of 
+      fun(Element, Count) ->
+              case Element =:= Needle of 
                   true -> Count + 1 ;
                   false -> Count
               end
-      end, 0, Haystack),
-
+      end, 0, Haystack).
