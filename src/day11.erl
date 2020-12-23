@@ -9,7 +9,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % could be shielded with -ifdef(TEST) macro
--export([parse/1, adjacent/2, at/2, next/2, next/1,
+-export([parse/1, adjacent/2, at/2, next_adj/2, next/2,
          count_occupied/1, visible/2]).
 
 %%% solution
@@ -99,34 +99,34 @@ arrow(Grid, _Origin={X, Y}, Vector={Dx, Dy}) ->
 dimensions(Grid) ->
     {length(Grid), length(lists:nth(1, Grid))}.
 
-%% @doc Advances grid to the next generation.
-next(Grid) ->
+%% @doc Advances grid to the next generation using strategy fun.
+next(Grid, Strategy) ->
     {MaxX, MaxY} = dimensions(Grid),
     [
-     [next(Grid, {Row, Col})
+     [Strategy(Grid, {Row, Col})
       || Col <- lists:seq(1, MaxY)]
      || Row <- lists:seq(1, MaxX)
     ].
 
 
 %% @doc Produces the next generation tile at {X, Y}.
-next(Grid, {X, Y}) ->
+next_adj(Grid, {X, Y}) ->
     {MaxX, MaxY} = dimensions(Grid),
     Tile = at(Grid, {X, Y}),
     Adjacent = [at(Grid, {AdjX, AdjY})
                 || {AdjX, AdjY} <- adjacent({MaxX, MaxY},
                                                  {X, Y})],
-    next2(Tile, Adjacent).
+    next_adj2(Tile, Adjacent).
 
 %% @doc Produces the next generation tile given current and
 %% adjacent tiles.
-next2(floor, _Adjacent) -> floor;
-next2(empty, Adjacent) ->
+next_adj2(floor, _Adjacent) -> floor;
+next_adj2(empty, Adjacent) ->
     case lists:member(occupied, Adjacent) of
         false -> occupied;
         true -> empty
     end;
-next2(occupied, Adjacent) ->
+next_adj2(occupied, Adjacent) ->
     case count(occupied, Adjacent) >= 4 of
         true -> empty;
         false -> occupied
@@ -142,7 +142,7 @@ count(X, [_|XS]) -> count(X, XS).
 
 %% @doc Counts occupied seats after equilibrium.
 part1(Grid) ->
-    NewGrid = next(Grid),
+    NewGrid = next(Grid, fun next_adj/2),
     case NewGrid =:= Grid of 
         true -> count_occupied(Grid);
         false -> part1(NewGrid)

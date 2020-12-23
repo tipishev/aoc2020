@@ -265,20 +265,20 @@ at_test_() ->
 
     ].
 
-next_tile_test_() ->
+next_adj_test_() ->
     [
 
      {"Check seat becoming occupied",
       ?_assertEqual(occupied,
-         day11:next(day11:parse(?GEN0), {1, 1}))},
+         day11:next_adj(day11:parse(?GEN0), {1, 1}))},
 
      {"Check floor not changing",
       ?_assertEqual(floor,
-         day11:next(day11:parse(?GEN0), {1, 2}))},
+         day11:next_adj(day11:parse(?GEN0), {1, 2}))},
 
      {"Check freeing-up",
       ?_assertEqual(empty,
-         day11:next(day11:parse(?GEN1), {1, 3}))}
+         day11:next_adj(day11:parse(?GEN1), {1, 3}))}
 
     ].
 
@@ -287,13 +287,18 @@ next_grid_test_() ->
 
      {"GEN0 -> GEN1",
       ?_assertEqual(day11:parse(?GEN1),
-                    day11:next(day11:parse(?GEN0)))},
+                    day11:next(day11:parse(?GEN0),
+                               fun day11:next_adj/2))},
 
      {"GEN1 -> GEN2",
-      ?_assertEqual(day11:parse(?GEN2), day11:next(day11:parse(?GEN1)))},
+      ?_assertEqual(day11:parse(?GEN2),
+                    day11:next(day11:parse(?GEN1),
+                               fun day11:next_adj/2))},
 
      {"GEN2 -> GEN3",
-      ?_assertEqual(day11:parse(?GEN3), day11:next(day11:parse(?GEN2)))}
+      ?_assertEqual(day11:parse(?GEN3),
+                    day11:next(day11:parse(?GEN2),
+                               fun day11:next_adj/2))}
 
     ].
 
