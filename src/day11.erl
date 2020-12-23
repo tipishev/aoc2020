@@ -9,12 +9,13 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % could be shielded with -ifdef(TEST) macro
--export([parse/1, adjacent/2, at/2, next/2, next/1]).
+-export([parse/1, adjacent/2, at/2, next/2, next/1,
+         count_occupied/1]).
 
 %%% solution
 
-solve_part1(_Input) ->
-    undefined.
+solve_part1(Input) ->
+    part1(parse(Input)).
 
 solve_part2(_Input) ->
     undefined.
@@ -97,6 +98,11 @@ next2(occupied, Adjacent) ->
         false -> occupied
     end.
 
+%% @doc Counts the number of occupied seats.
+count_occupied(Grid) ->
+    count(occupied, lists:flatten(Grid)).
+
+
 count(Needle, Haystack) ->
     lists:foldl(
       fun(Element, Count) ->
@@ -105,3 +111,11 @@ count(Needle, Haystack) ->
                   false -> Count
               end
       end, 0, Haystack).
+
+%% @doc Counts occupied seats after equilibrium.
+part1(Grid) ->
+    NewGrid = next(Grid),
+    case NewGrid =:= Grid of 
+        true -> count_occupied(Grid);
+        false -> part1(NewGrid)
+    end.

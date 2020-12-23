@@ -1,6 +1,8 @@
 -module(day11_tests).
 -include_lib("eunit/include/eunit.hrl").
 
+%%% part1 fixtures
+
 -define(GEN0,
 "L.LL.LL.LL
 LLLLLLL.LL
@@ -74,14 +76,122 @@ L.#.L..#..
 #.LLLLLL.L
 #.#L#L#.##").
 
+%%% part 2 fixtures
 
-% part1_test_() ->
-%     [
+-define(VISIBILITY_EXAMPLE1,
+".......#.
+...#.....
+.#.......
+.........
+..#L....#
+....#....
+.........
+#........
+...#.....").
 
-%      {"Example test",
-%       ?_assertEqual(?GEN1, day11:life(?GEN0))}
+-define(VISIBILITY_EXAMPLE2,
+".............
+.L.L.#.#.#.#.
+.............").
 
-%     ].
+-define(VISIBILITY_EXAMPLE3,
+".##.##.
+#.#.#.#
+##...##
+...L...
+##...##
+#.#.#.#
+.##.##.").
+
+
+-define(VIS0,
+"L.LL.LL.LL
+LLLLLLL.LL
+L.L.L..L..
+LLLL.LL.LL
+L.LL.LL.LL
+L.LLLLL.LL
+..L.L.....
+LLLLLLLLLL
+L.LLLLLL.L
+L.LLLLL.LL").
+
+-define(VIS1,
+"#.##.##.##
+#######.##
+#.#.#..#..
+####.##.##
+#.##.##.##
+#.#####.##
+..#.#.....
+##########
+#.######.#
+#.#####.##").
+
+-define(VIS2,
+"#.##.##.##
+#.LL.LL.L#
+#LLLLLL.LL
+L.L.L..L..
+LLLL.LL.LL
+L.LL.LL.LL
+L.LLLLL.LL
+..L.L.....
+LLLLLLLLL#
+#.LLLLLL.L
+#.LLLLL.L#").
+
+-define(VIS3,
+"#.L#.##.L#
+#L#####.LL
+L.#.#..#..
+##L#.##.##
+#.##.#L.##
+#.#####.#L
+..#.#.....
+LLL####LL#
+#.L#####.L
+#.L####.L#").
+
+-define(VIS4,
+"#.L#.L#.L#
+#LLLLLL.LL
+L.L.L..#..
+##LL.LL.L#
+L.LL.LL.L#
+#.LLLLL.LL
+..L.L.....
+LLLLLLLLL#
+#.LLLLL#.L
+#.L#LL#.L#").
+
+-define(VIS5,
+"#.L#.L#.L#
+#LLLLLL.LL
+L.L.L..#..
+##L#.#L.L#
+L.L#.#L.L#
+#.L####.LL
+..#.#.....
+LLL###LLL#
+#.LLLLL#.L
+#.L#LL#.L#").
+
+-define(VIS6,
+"#.L#.L#.L#
+#LLLLLL.LL
+L.L.L..#..
+##L#.#L.L#
+L.L#.LL.L#
+#.LLLL#.LL
+..#.L.....
+LLL###LLL#
+#.LLLLL#.L
+#.L#LL#.L#").
+
+
+%%% Tests
+
 
 adjacent_test_() ->
     [
@@ -181,6 +291,21 @@ next_grid_test_() ->
                     day11:next(day11:parse(?GEN0)))},
 
      {"GEN1 -> GEN2",
-      ?_assertEqual(day11:parse(?GEN2), day11:next(day11:parse(?GEN1)))}
+      ?_assertEqual(day11:parse(?GEN2), day11:next(day11:parse(?GEN1)))},
+
+     {"GEN2 -> GEN3",
+      ?_assertEqual(day11:parse(?GEN3), day11:next(day11:parse(?GEN2)))}
+
+    ].
+
+count_occupied_test_() ->
+    [
+
+     {"Simple test",
+     ?_assertEqual(2, day11:count_occupied([[empty, occupied],
+                                            [occupied, floor]]))},
+
+     {"Example test",
+     ?_assertEqual(37, day11:count_occupied(day11:parse(?GEN5)))}
 
     ].
