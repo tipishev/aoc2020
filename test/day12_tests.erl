@@ -33,7 +33,7 @@ turn_test_() ->
      {"Turn +90 from East should head North",
       ?_assertEqual(90, day12:turn(0, 90))},
 
-     {"Turn -90 from East should head South",
+     {"Turn 270 from East should head South",
       ?_assertEqual(270, day12:turn(0, 270))},
 
      {"Turn 180 from East should head West",
