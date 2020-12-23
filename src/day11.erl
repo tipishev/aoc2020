@@ -9,7 +9,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % could be shielded with -ifdef(TEST) macro
--export([parse/1, life/1, adjacent/2, at/2, next/2]).
+-export([parse/1, adjacent/2, at/2, next/2, next/1]).
 
 %%% solution
 
@@ -18,9 +18,6 @@ solve_part1(_Input) ->
 
 solve_part2(_Input) ->
     undefined.
-
-life(GridStr) ->
-    parse(GridStr).
 
 -type tile() :: floor | empty | occupied.
 -type grid() :: [[tile(), ...], ...].
@@ -66,6 +63,16 @@ at(Grid, {X, Y}) ->
 %% @doc Measures X, Y dimensions of the Grid.
 dimensions(Grid) ->
     {length(Grid), length(lists:nth(1, Grid))}.
+
+%% @doc Advances grid to the next generation.
+next(Grid) ->
+    {MaxX, MaxY} = dimensions(Grid),
+    [
+     [next(Grid, {Row, Col})
+      || Col <- lists:seq(1, MaxY)]
+     || Row <- lists:seq(1, MaxX)
+    ].
+
 
 %% @doc Produces the next generation tile at {X, Y}.
 next(Grid, {X, Y}) ->

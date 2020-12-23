@@ -156,7 +156,7 @@ at_test_() ->
 
     ].
 
-next_test_() ->
+next_tile_test_() ->
     [
 
      {"Check seat becoming occupied",
@@ -170,5 +170,17 @@ next_test_() ->
      {"Check freeing-up",
       ?_assertEqual(empty,
          day11:next(day11:parse(?GEN1), {1, 3}))}
+
+    ].
+
+next_grid_test_() ->
+    [
+
+     {"GEN0 -> GEN1",
+      ?_assertEqual(day11:parse(?GEN1),
+                    day11:next(day11:parse(?GEN0)))},
+
+     {"GEN1 -> GEN2",
+      ?_assertEqual(day11:parse(?GEN2), day11:next(day11:parse(?GEN1)))}
 
     ].
