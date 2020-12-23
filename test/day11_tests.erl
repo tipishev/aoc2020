@@ -311,6 +311,24 @@ count_occupied_test_() ->
 
 visibility_test_() ->
     [
-     {}
+
+     {
+      "empty seat below would see eight occupied seats",
+      ?_assertEqual(lists:duplicate(8, occupied),
+                    day11:visible(day11:parse(?VISIBILITY_EXAMPLE1), {5, 4}))
+     },
+
+     {
+      "The leftmost empty seat below would only see one empty seat,"
+      " but cannot see any of the occupied ones.",
+      ?_assertEqual([empty],
+                    day11:visible(day11:parse(?VISIBILITY_EXAMPLE2), {2, 2}))
+     },
+
+     {
+      "The empty seat below would see no occupied seats.",
+      ?_assertEqual([],
+                    day11:visible(day11:parse(?VISIBILITY_EXAMPLE3), {4, 4}))
+     }
 
     ].

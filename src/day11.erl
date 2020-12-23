@@ -10,7 +10,7 @@
 
 % could be shielded with -ifdef(TEST) macro
 -export([parse/1, adjacent/2, at/2, next/2, next/1,
-         count_occupied/1]).
+         count_occupied/1, visible/2]).
 
 %%% solution
 
@@ -68,9 +68,15 @@ at(Grid, {X, Y}) ->
       X :: integer(),
       Y :: integer(),
       Tiles :: [tile()].
+
 %% @doc Lists non-floor tiles visible from {X, Y}.
-visible(Grid, {X, Y}) ->
-    todo.
+visible(Grid, Origin) ->
+    WithWalls = [arrow(Grid, Origin, Vector) ||
+     Vector <- [{1, 0}, {1, 1}, {0, 1}, {-1, 1},
+                {-1, 0}, {-1, -1}, {0, -1}, {1, -1}]
+    ],
+    WithoutWalls = [Tile || Tile <- WithWalls, Tile =/= wall],
+    WithoutWalls.
 
 %% @doc Shoots an arrow from {X, Y} in the direction of {Dx, Dy}
 %% returns either `empty`, `occupied`, or `wall`.
