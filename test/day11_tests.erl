@@ -129,8 +129,7 @@ L.LLLLL.LL").
 #.#####.##").
 
 -define(VIS2,
-"#.##.##.##
-#.LL.LL.L#
+"#.LL.LL.L#
 #LLLLLL.LL
 L.L.L..L..
 LLLL.LL.LL
@@ -140,55 +139,6 @@ L.LLLLL.LL
 LLLLLLLLL#
 #.LLLLLL.L
 #.LLLLL.L#").
-
--define(VIS3,
-"#.L#.##.L#
-#L#####.LL
-L.#.#..#..
-##L#.##.##
-#.##.#L.##
-#.#####.#L
-..#.#.....
-LLL####LL#
-#.L#####.L
-#.L####.L#").
-
--define(VIS4,
-"#.L#.L#.L#
-#LLLLLL.LL
-L.L.L..#..
-##LL.LL.L#
-L.LL.LL.L#
-#.LLLLL.LL
-..L.L.....
-LLLLLLLLL#
-#.LLLLL#.L
-#.L#LL#.L#").
-
--define(VIS5,
-"#.L#.L#.L#
-#LLLLLL.LL
-L.L.L..#..
-##L#.#L.L#
-L.L#.#L.L#
-#.L####.LL
-..#.#.....
-LLL###LLL#
-#.LLLLL#.L
-#.L#LL#.L#").
-
--define(VIS6,
-"#.L#.L#.L#
-#LLLLLL.LL
-L.L.L..#..
-##L#.#L.L#
-L.L#.LL.L#
-#.LLLL#.LL
-..#.L.....
-LLL###LLL#
-#.LLLLL#.L
-#.L#LL#.L#").
-
 
 %%% Tests
 
@@ -282,7 +232,7 @@ next_adj_test_() ->
 
     ].
 
-next_grid_test_() ->
+next_adj_grid_test_() ->
     [
 
      {"GEN0 -> GEN1",
@@ -335,5 +285,20 @@ visibility_test_() ->
       ?_assertEqual([],
                     day11:visible(day11:parse(?VISIBILITY_EXAMPLE3), {4, 4}))
      }
+
+    ].
+
+next_vis_grid_test_() ->
+    [
+
+     {"VIS0 -> VIS1",
+      ?_assertEqual(day11:parse(?VIS1),
+                    day11:next(day11:parse(?VIS0),
+                               fun day11:next_vis/2))},
+
+     {"VIS1 -> VIS2",
+      ?_assertEqual(day11:parse(?VIS2),
+                    day11:next(day11:parse(?VIS1),
+                               fun day11:next_vis/2))}
 
     ].

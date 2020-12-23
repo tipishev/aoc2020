@@ -9,16 +9,18 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % could be shielded with -ifdef(TEST) macro
--export([parse/1, adjacent/2, at/2, next_adj/2, next/2,
-         count_occupied/1, visible/2]).
+-export([parse/1,
+         adjacent/2, at/2, visible/2,
+         next/2, next_adj/2, next_vis/2,
+         count_occupied/1]).
 
 %%% solution
 
 solve_part1(Input) ->
     part1(parse(Input)).
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Input) ->
+    part2(parse(Input)).
 
 -type tile() :: floor | empty | occupied.
 -type grid() :: [[tile(), ...], ...].
@@ -108,6 +110,7 @@ next(Grid, Strategy) ->
      || Row <- lists:seq(1, MaxX)
     ].
 
+%%% Counting Strategies
 
 %% @doc Produces the next generation tile at {X, Y}.
 next_adj(Grid, {X, Y}) ->
@@ -132,18 +135,45 @@ next_adj2(occupied, Adjacent) ->
         false -> occupied
     end.
 
+%% @doc Produces the next generation tile using visibility rules
+next_vis(Grid, Origin) ->
+    Tile = at(Grid, Origin),
+    Visible = visible(Grid, Origin),
+    case Tile of
+        floor -> floor;
+        occupied ->
+            case count(occupied, Visible) >= 5 of
+                true -> empty;
+                false -> occupied
+            end;
+        empty ->
+            case count(occupied, Visible) =:= 0 of
+                true -> occupied;
+                false -> empty
+            end
+    end.
+
 %% @doc Counts the number of occupied seats.
 count_occupied(Grid) ->
     count(occupied, lists:flatten(Grid)).
 
+%% @doc Counts X's occurence in list.
 count(_, []) -> 0;
 count(X, [X | XS]) -> 1 + count(X, XS);
 count(X, [_|XS]) -> count(X, XS).
 
-%% @doc Counts occupied seats after equilibrium.
+%% @doc Counts occupied seats after equilibrium using next_adj.
 part1(Grid) ->
     NewGrid = next(Grid, fun next_adj/2),
     case NewGrid =:= Grid of 
         true -> count_occupied(Grid);
         false -> part1(NewGrid)
+    end.
+
+%% @doc Counts occupied seats after equilibrium using next_vis.
+part2(Grid) ->
+    NewGrid = next(Grid, fun next_vis/2),
+    case NewGrid =:= Grid of 
+        true -> count_occupied(Grid);
+        false -> part2(NewGrid)
     end.
