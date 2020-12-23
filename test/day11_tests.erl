@@ -75,13 +75,13 @@ L.#.L..#..
 #.#L#L#.##").
 
 
-part1_test_() ->
-    [
+% part1_test_() ->
+%     [
 
-     {"Example test",
-      ?_assertEqual(?GEN1, day11:life(?GEN0))}
+%      {"Example test",
+%       ?_assertEqual(?GEN1, day11:life(?GEN0))}
 
-    ].
+%     ].
 
 adjacent_test_() ->
     [
@@ -147,11 +147,28 @@ parse_test_() ->
 at_test_() ->
     [
 
-     {"Parse a simple board string",
-      ?_assertEqual(floor ,
+     {"Check that bottom-left corner is floor",
+      ?_assertEqual(floor,
          day11:at([
-          [empty, floor],
+          [empty, empty],
           [floor, occupied]
          ], {2, 1}))}
+
+    ].
+
+next_test_() ->
+    [
+
+     {"Check seat becoming occupied",
+      ?_assertEqual(occupied,
+         day11:next(day11:parse(?GEN0), {1, 1}))},
+
+     {"Check floor not changing",
+      ?_assertEqual(floor,
+         day11:next(day11:parse(?GEN0), {1, 2}))},
+
+     {"Check freeing-up",
+      ?_assertEqual(empty,
+         day11:next(day11:parse(?GEN1), {1, 3}))}
 
     ].

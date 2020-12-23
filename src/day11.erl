@@ -9,7 +9,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % could be shielded with -ifdef(TEST) macro
--export([parse/1, life/1, adjacent/2, at/2]).
+-export([parse/1, life/1, adjacent/2, at/2, next/2]).
 
 %%% solution
 
@@ -32,7 +32,6 @@ life(GridStr) ->
 %% @returns is a double-list of atoms floor, empty,
 %% @throws shadows.
 %% and occupied.
-
 parse(GridStr) ->
     Lines = string:lexemes(GridStr, "\n"),
     [parse_line(Line) || Line <- Lines].
@@ -77,6 +76,8 @@ next(Grid, {X, Y}) ->
                                                  {X, Y})],
     next2(Tile, Adjacent).
 
+%% @doc Produces the next generation tile given current and
+%% adjacent tiles.
 next2(floor, _Adjacent) -> floor;
 next2(empty, Adjacent) ->
     case lists:member(occupied, Adjacent) of
