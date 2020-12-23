@@ -238,7 +238,6 @@ adjacent_test_() ->
 
     ].
 
-
 parse_test_() ->
     [
 
@@ -307,5 +306,11 @@ count_occupied_test_() ->
 
      {"Example test",
      ?_assertEqual(37, day11:count_occupied(day11:parse(?GEN5)))}
+
+    ].
+
+visibility_test_() ->
+    [
+     {}
 
     ].

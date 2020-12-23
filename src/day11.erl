@@ -41,6 +41,7 @@ parse_symbol($.) -> floor;
 parse_symbol($L) -> empty;
 parse_symbol($#) -> occupied.
 
+
 %% @doc Lists sorted adjacent tiles' coordinates
 adjacent({MaxX, MaxY}, {X, Y}) ->
     lists:sort([
@@ -52,6 +53,7 @@ adjacent({MaxX, MaxY}, {X, Y}) ->
      AdjX =< MaxX, AdjY =< MaxY
     ]).
 
+
 -spec at(Grid, {X, Y}) -> Tile when
       Grid :: grid(),
       X :: integer(),
@@ -60,6 +62,32 @@ adjacent({MaxX, MaxY}, {X, Y}) ->
 %% @doc Shows what is at coordinates {X, Y}.
 at(Grid, {X, Y}) ->
     lists:nth(Y, lists:nth(X, Grid)).
+
+-spec visible(Grid, {X, Y}) -> Tiles when
+      Grid :: grid(),
+      X :: integer(),
+      Y :: integer(),
+      Tiles :: [tile()].
+%% @doc Lists non-floor tiles visible from {X, Y}.
+visible(Grid, {X, Y}) ->
+    todo.
+
+%% @doc Shoots an arrow from {X, Y} in the direction of {Dx, Dy}
+%% returns either `empty`, `occupied`, or `wall`.
+arrow(Grid, _Origin={X, Y}, Vector={Dx, Dy}) ->
+    {MaxX, MaxY} = dimensions(Grid),
+    NewOrigin = {NewX, NewY} = {X + Dx, Y + Dy},
+    case lists:member(NewX, [0, MaxX + 1])
+          or lists:member(NewY, [0, MaxY + 1]) of
+          true -> wall;
+          false ->
+            case at(Grid, {NewX, NewY}) of
+                empty -> empty;
+                occupied -> occupied;
+                floor -> arrow(Grid, NewOrigin, Vector)
+            end
+    end.
+
 
 %% @doc Measures X, Y dimensions of the Grid.
 dimensions(Grid) ->
