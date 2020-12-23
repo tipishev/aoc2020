@@ -30,6 +30,9 @@ cruise_test_() ->
 turn_test_() ->
     [
 
+     {"Turn 0 from East should head East",
+      ?_assertEqual(0, day12:turn(0, 0))},
+
      {"Turn +90 from East should head North",
       ?_assertEqual(90, day12:turn(0, 90))},
 
@@ -38,9 +41,6 @@ turn_test_() ->
 
      {"Turn 180 from East should head West",
       ?_assertEqual(180, day12:turn(0, 180))},
-
-     {"Turn 0 from East should head East",
-      ?_assertEqual(0, day12:turn(0, 0))},
 
      {"Turn 360 from East should head East",
       ?_assertEqual(0, day12:turn(0, 360))},
