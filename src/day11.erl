@@ -136,15 +136,9 @@ next2(occupied, Adjacent) ->
 count_occupied(Grid) ->
     count(occupied, lists:flatten(Grid)).
 
-
-count(Needle, Haystack) ->
-    lists:foldl(
-      fun(Element, Count) ->
-              case Element =:= Needle of 
-                  true -> Count + 1 ;
-                  false -> Count
-              end
-      end, 0, Haystack).
+count(_, []) -> 0;
+count(X, [X | XS]) -> 1 + count(X, XS);
+count(X, [_|XS]) -> count(X, XS).
 
 %% @doc Counts occupied seats after equilibrium.
 part1(Grid) ->
