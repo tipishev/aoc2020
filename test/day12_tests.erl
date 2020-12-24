@@ -27,6 +27,16 @@ cruise_test_() ->
 
     ].
 
+cruise_wp_test_() ->
+    [
+
+     {"Waypoint-cruise using example instructions, should arrive at {17, -8}, heading South",
+      ?_assertEqual({{214, -72}, {4, -10}},
+                    day12:wp_cruise({0, 0}, {1, 10},
+                                    day12:parse(?EXAMPLE_INSTRUCTIONS)))}
+
+    ].
+
 turn_test_() ->
     [
 
