@@ -5,14 +5,6 @@
 "939
 7,13,x,x,59,x,31,19").
 
-part1_test_() ->
-    [
-
-     {"The puzzle example.",
-      ?_assertEqual(undefined, day13:solve_part1(?EXAMPLE))}
-
-    ].
-
 parse_test_() ->
     [
 
@@ -22,3 +14,12 @@ parse_test_() ->
                     day13:parse(?EXAMPLE))}
 
     ].
+
+earliest_test_() ->
+    [
+
+     {"The puzzle example.",
+      ?_assertEqual({wait, 5, bus, 59},
+                    day13:earliest(day13:parse(?EXAMPLE)))}
+    ].
+
