@@ -30,7 +30,7 @@ cruise_test_() ->
 cruise_wp_test_() ->
     [
 
-     {"Waypoint-cruise using example instructions, should arrive at {17, -8}, heading South",
+     {"Waypoint-cruise using example instructions, arrive at {17, -8}, heading S",
       ?_assertEqual({{214, -72}, {4, -10}},
                     day12:wp_cruise({0, 0}, {1, 10},
                                     day12:parse(?EXAMPLE_INSTRUCTIONS)))}
@@ -57,4 +57,24 @@ turn_test_() ->
 
      {"Turn 540 from East should head West",
       ?_assertEqual(180, day12:turn(0, 540))}
+    ].
+
+rotate_test_() ->
+    [
+
+     {
+      "Turn {10, 1} 90 counter-clockwise should give {-1, 10}",
+      ?_assertEqual({-1, 10}, day12:rotate({10, 1}, 90))
+     },
+
+     {
+      "Turn {10, 1} 90 clockwise should give {-1, 10}",
+      ?_assertEqual({1, -10}, day12:rotate({10, 1}, -90))
+     },
+
+     {
+      "Turn {10, 1} 360 degrees should give {10, 1}",
+      ?_assertEqual({10, 1}, day12:rotate({10, 1}, 360))
+     }
+
     ].

@@ -3,7 +3,11 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % for tests
--export([parse/1, cruise/3, turn/2, wp_cruise/3]).
+-export([
+         parse/1,
+         cruise/3, wp_cruise/3,
+         turn/2, rotate/2
+        ]).
 
 %%% solution
 
@@ -11,7 +15,7 @@ solve_part1(Input) ->
     {{Lon, Lat}, _Heading} = cruise({0, 0}, 0, parse(Input)),
     abs(Lon) + abs(Lat).
 
-solve_part2(_Input) ->
+solve_part2(Input) ->
     {{Lon, Lat}, {DLon, DLat}} = wp_cruise({0, 0}, {10, 1}, parse(Input)),
     abs(Lon) + abs(Lat).
 
@@ -71,6 +75,11 @@ advance(Position, Heading, {forward, Units}) ->
 %% @doc Advance the ship/waypoint position according to a single instruction.
 % turn waypoint
 wp_advance(Position, WaypointRelativePosition, {left, Degrees}) ->
+    {Position, rotate(WaypointRelativePosition, Degrees)};
+wp_advance(Position, WaypointRelativePosition, {right, Degrees}) ->
+    {Position, rotate(WaypointRelativePosition, -Degrees)};
+
+%%% Herlpers
 
 %% @doc Turns a given heading by Angle degrees, returns a value in [0, 360].
 turn(Heading, Angle) ->
@@ -83,3 +92,14 @@ heading_to_direction(Heading) ->
         180 -> west;
         270 -> south
     end.
+
+%% @doc rotate vector {X, Y} around {0, 0} by Angle degrees.
+rotate({X, Y}, Angle) ->
+    RadAngle = to_radians(Angle),
+    Sin = math:sin(RadAngle),
+    Cos = math:cos(RadAngle),
+    {round(X * Cos - Y * Sin), round(X * Sin + Y * Cos)}.
+
+
+to_radians(Degrees) ->
+    (Degrees / 180) * math:pi().
