@@ -16,7 +16,7 @@ solve_part1(Input) ->
     abs(Lon) + abs(Lat).
 
 solve_part2(Input) ->
-    {{Lon, Lat}, {DLon, DLat}} = wp_cruise({0, 0}, {10, 1}, parse(Input)),
+    {{Lon, Lat}, _WpRelPos} = wp_cruise({0, 0}, {10, 1}, parse(Input)),
     abs(Lon) + abs(Lat).
 
 %%% Parsing
@@ -78,6 +78,19 @@ wp_advance(Position, WaypointRelativePosition, {left, Degrees}) ->
     {Position, rotate(WaypointRelativePosition, Degrees)};
 wp_advance(Position, WaypointRelativePosition, {right, Degrees}) ->
     {Position, rotate(WaypointRelativePosition, -Degrees)};
+% waypoint shift
+wp_advance(Position, {WpX, WpY}, {north, Units}) ->
+    {Position, {WpX, WpY + Units}};
+wp_advance(Position, {WpX, WpY}, {south, Units}) ->
+    {Position, {WpX, WpY - Units}};
+wp_advance(Position, {WpX, WpY}, {east, Units}) ->
+    {Position, {WpX + Units, WpY}};
+wp_advance(Position, {WpX, WpY}, {west, Units}) ->
+    {Position, {WpX - Units, WpY}};
+% ship shift
+wp_advance({Lon, Lat}, {WpX, WpY}, {forward, Times}) ->
+    NewShipPosition = {Lon + Times * WpX, Lat + Times * WpY},
+    {NewShipPosition, {WpX, WpY}}.
 
 %%% Herlpers
 
@@ -99,7 +112,6 @@ rotate({X, Y}, Angle) ->
     Sin = math:sin(RadAngle),
     Cos = math:cos(RadAngle),
     {round(X * Cos - Y * Sin), round(X * Sin + Y * Cos)}.
-
 
 to_radians(Degrees) ->
     (Degrees / 180) * math:pi().
