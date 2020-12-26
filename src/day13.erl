@@ -4,7 +4,7 @@
 
 -export([
          parse/1, earliest/1,
-         parse_congruences/1, extended_gcd/2
+         parse_congruences/1, extended_gcd/2, solve_congruences/1
         ]).
 
 %%% Solution
@@ -55,6 +55,23 @@ earliest({earliest, Earliest, buses, Buses}) ->
                || Bus <- Buses]).
 
 %%% Part 2
+
+solve_congruences([H | T]) ->
+    lists:foldl(fun solve_congruences_folder/2, H, T).
+
+solve_congruences_folder({n, N2, a, A2}, {n, N1, a, A2}) ->
+    {M1, M2} = bezout(N1, N2),
+    X = A1 * M2 * N2 + A2 * M1 * N1,
+    NonNegX = case X < 0 of
+                  true -> X + N1 * N2;
+                  false -> X
+              end,
+
+
+bezout(A, B) ->
+    {m1, M1, m2, M2, _, _, _, _, _, _} = extended_gcd(A, B),
+    {M1, M2}.
+
 
 %%% @doc Computes Greatest Common Divisor and Bezout's coefficients.
 %%% @reference https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm

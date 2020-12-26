@@ -31,6 +31,23 @@ parse2_test_() ->
 
     ].
 
+solve_congruences_test_() ->
+    [
+
+     {"Solve the system of congruences from example.",
+      ?_assertEqual(
+         1068781,
+         day13:solve_congruences([
+          {n, 7, a, 0},
+          {n, 13, a, 12},
+          {n, 19, a, 12},
+          {n, 31, a, 25},
+          {n, 59, a, 55}
+         ]))}
+
+    ].
+
+
 extended_gcd_test_() ->
     [
 
