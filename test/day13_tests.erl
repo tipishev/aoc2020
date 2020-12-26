@@ -45,7 +45,7 @@ solve_congruences_test_() ->
 
      ,{"Solve the system of congruences from example.",
       ?_assertEqual(
-         {n, 1068781, a, 3162341},
+         {n, 3162341, a, 1068781},
          day13:solve_congruences([
           {n, 7, a, 0},
           {n, 13, a, 12},

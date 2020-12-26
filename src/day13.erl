@@ -75,7 +75,7 @@ solve_congruences_folder(_Elem={n, N1, a, A1},
     A = A1 * M2 * N2 + A2 * M1 * N1,
     NonNegA = case A < 0 of
                   true -> A + N;
-                  false -> A
+                  false -> A rem N
               end,
     {n, N, a, NonNegA}.
 
