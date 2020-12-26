@@ -2,10 +2,8 @@
 
 -export([solve_part1/1, solve_part2/1]).
 
--export([
-         parse/1, earliest/1,
-         parse_congruences/1, extended_gcd/2, solve_congruences/1
-        ]).
+-export([parse/1, earliest/1,
+         parse_congruences/1, extended_gcd/2, solve_congruences/1]).
 
 %%% Solution
 
@@ -15,7 +13,8 @@ solve_part1(Input) ->
 
 solve_part2(Input) ->
     Congruences = parse_congruences(Input),
-    Congruences.
+    {a, A, n, _N} = solve_congruences(Congruences),
+    A.
 
 %%% Parse
 
@@ -44,7 +43,7 @@ congruences_folder(Element, {Index, Congruences}) ->
                           true -> A;
                           false -> A + N
                       end,
-            {Index + 1, [{n, N, a, NonNegA} | Congruences]}
+            {Index + 1, [{a, NonNegA, n, N} | Congruences]}
     end.
 
 %%% Part 1 solution
@@ -54,30 +53,21 @@ earliest({earliest, Earliest, buses, Buses}) ->
                 bus, Bus}
                || Bus <- Buses]).
 
-%%% Part 2
+%%% Part 2 solution
 
-% FIXME jump-start recursion, deduplicate
-solve_congruences([ {n, N1, a, A1}, {n, N2, a, A2} | T]) ->
+solve_congruences([ Cong1, Cong2 | Congs]) ->
+    Solution_1_2 = solve_congruences(Cong1, Cong2),  % jump-start recursion
+    lists:foldl(fun solve_congruences/2, Solution_1_2, Congs).
+
+solve_congruences({a, A1, n, N1}, {a, A2, n, N2}) ->
     {M1, M2} = bezout(N1, N2),
     N = N1 * N2,
-    A = A1 * M2 * N2 + A2 * M1 * N1,
-    NonNegA = case A < 0 of
-                  true -> A + N;
-                  false -> A
-              end,
-    lists:foldl(fun solve_congruences_folder/2,
-                                {n, N, a, NonNegA}, T).
-
-solve_congruences_folder(_Elem={n, N1, a, A1},
-                         _Acc={n, N2, a, A2}) ->
-    {M1, M2} = bezout(N1, N2),
-    N = N1 * N2,
-    A = A1 * M2 * N2 + A2 * M1 * N1,
-    NonNegA = case A < 0 of
-                  true -> A + N;
-                  false -> A rem N
-              end,
-    {n, N, a, NonNegA}.
+    A = (A1 * M2 * N2 + A2 * M1 * N1) rem N,
+    ReducedA = case A < 0 of
+               true -> A + N;
+               false -> A
+           end,
+    {a, ReducedA, n, N}.
 
 
 bezout(A, B) ->

@@ -21,11 +21,11 @@ parse2_test_() ->
      {"Parse the example as a sorted system of congruences.",
       ?_assertEqual(
          [
-          {n, 7, a, 0},
-          {n, 13, a, 12},
-          {n, 19, a, 12},
-          {n, 31, a, 25},
-          {n, 59, a, 55}
+          {a, 0, n, 7},
+          {a, 12, n, 13},
+          {a, 12, n, 19},
+          {a, 25, n, 31},
+          {a, 55, n, 59}
          ],
          day13:parse_congruences(?EXAMPLE))}
 
@@ -36,22 +36,22 @@ solve_congruences_test_() ->
 
      {"Solve the toy system of congruences from Wikipedia.",
       ?_assertEqual(
-         {n, 60, a, 39},
+         {a, 39, n, 60},
          day13:solve_congruences([
-          {n, 3, a, 0}
-          ,{n, 4, a, 3}
-          ,{n, 5, a, 4}
+          {a, 0, n, 3}
+          ,{a, 3, n, 4}
+          ,{a, 4, n, 5}
          ]))}
 
      ,{"Solve the system of congruences from example.",
       ?_assertEqual(
-         {n, 3162341, a, 1068781},
+         {a, 1068781, n, 3162341},
          day13:solve_congruences([
-          {n, 7, a, 0},
-          {n, 13, a, 12},
-          {n, 19, a, 12},
-          {n, 31, a, 25},
-          {n, 59, a, 55}
+          {a, 0, n, 7},
+          {a, 12, n, 13},
+          {a, 12, n, 19},
+          {a, 25, n, 31},
+          {a, 55, n, 59}
          ]))}
 
     ].
