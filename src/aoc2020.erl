@@ -10,6 +10,7 @@
 
 % TODO generalize to all days
 -spec solve(Day :: day()) -> solution().
+
 solve(day1) ->
     Input = read_newline_separated_integers(day1),
     #solution{part1=day1:solve_part1(Input),
@@ -38,16 +39,6 @@ solve(day6) ->
     #solution{part1=day6:solve_part1(Input),
               part2=day6:solve_part2(Input)};
 
-solve(day7) ->
-    Input = binary_to_list(read(day7)),
-    #solution{part1=day7:solve_part1(Input),
-              part2=day7:solve_part2(Input)};
-
-solve(day8) ->
-    Input = binary_to_list(read(day8)),
-    #solution{part1=day8:solve_part1(Input),
-              part2=day8:solve_part2(Input)};
-
 solve(day9) ->
     Input = read_newline_separated_integers(day9),
     #solution{part1=day9:solve_part1(Input),
@@ -58,20 +49,11 @@ solve(day10) ->
     #solution{part1=day10:solve_part1(Input),
               part2=day10:solve_part2(Input)};
 
-solve(day11) ->
-    Input = binary_to_list(read(day11)),
-    #solution{part1=day11:solve_part1(Input),
-              part2=day11:solve_part2(Input)};
-
-solve(day12) ->
-    Input = binary_to_list(read(day12)),
-    #solution{part1=day12:solve_part1(Input),
-              part2=day12:solve_part2(Input)};
-
-solve(day13) ->
-    Input = binary_to_list(read(day13)),
-    #solution{part1=day13:solve_part1(Input),
-              part2=day13:solve_part2(Input)}.
+% for any other Day
+solve(Day) ->
+    Input = binary_to_list(read(Day)),
+    #solution{part1=Day:solve_part1(Input),
+              part2=Day:solve_part2(Input)}.
 %%% Helpers
 
 
