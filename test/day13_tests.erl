@@ -34,9 +34,18 @@ parse2_test_() ->
 solve_congruences_test_() ->
     [
 
-     {"Solve the system of congruences from example.",
+     {"Solve the toy system of congruences from Wikipedia.",
       ?_assertEqual(
-         1068781,
+         {n, 60, a, 39},
+         day13:solve_congruences([
+          {n, 3, a, 0}
+          ,{n, 4, a, 3}
+          ,{n, 5, a, 4}
+         ]))}
+
+     ,{"Solve the system of congruences from example.",
+      ?_assertEqual(
+         {n, 1068781, a, 3162341},
          day13:solve_congruences([
           {n, 7, a, 0},
           {n, 13, a, 12},

@@ -56,16 +56,28 @@ earliest({earliest, Earliest, buses, Buses}) ->
 
 %%% Part 2
 
-solve_congruences([H | T]) ->
-    lists:foldl(fun solve_congruences_folder/2, H, T).
-
-solve_congruences_folder({n, N2, a, A2}, {n, N1, a, A2}) ->
+% FIXME jump-start recursion, deduplicate
+solve_congruences([ {n, N1, a, A1}, {n, N2, a, A2} | T]) ->
     {M1, M2} = bezout(N1, N2),
-    X = A1 * M2 * N2 + A2 * M1 * N1,
-    NonNegX = case X < 0 of
-                  true -> X + N1 * N2;
-                  false -> X
+    N = N1 * N2,
+    A = A1 * M2 * N2 + A2 * M1 * N1,
+    NonNegA = case A < 0 of
+                  true -> A + N;
+                  false -> A
               end,
+    lists:foldl(fun solve_congruences_folder/2,
+                                {n, N, a, NonNegA}, T).
+
+solve_congruences_folder(_Elem={n, N1, a, A1},
+                         _Acc={n, N2, a, A2}) ->
+    {M1, M2} = bezout(N1, N2),
+    N = N1 * N2,
+    A = A1 * M2 * N2 + A2 * M1 * N1,
+    NonNegA = case A < 0 of
+                  true -> A + N;
+                  false -> A
+              end,
+    {n, N, a, NonNegA}.
 
 
 bezout(A, B) ->
@@ -74,7 +86,7 @@ bezout(A, B) ->
 
 
 %%% @doc Computes Greatest Common Divisor and Bezout's coefficients.
-%%% @reference https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
+%%% @reference wikipedia.org/wiki/Extended_Euclidean_algorithm
 extended_gcd(A, B) ->
     {OldR0, R0} = {A, B},
     {OldS0, S0} = {1, 0},
@@ -92,7 +104,6 @@ extended_gcd(OldR, R, OldS, S, OldT, T) ->
     extended_gcd(R, OldR - Quotient * R,
                  S, OldS - Quotient * S,
                  T, OldT - Quotient * T).
-
 
 %%% Herlpers
 split(Str, Sep) -> string:lexemes(Str, Sep).
