@@ -31,6 +31,17 @@ parse2_test_() ->
 
     ].
 
+extended_gcd_test_() ->
+    [
+
+     {"Wikipedia example of 240 and 46.",
+      ?_assertEqual(
+         {m1,-9,m2,47,gcd,2,quotA,-120,quotB,23},
+         day13:extended_gcd(240, 46))}
+
+
+    ].
+
 earliest_test_() ->
     [
 
