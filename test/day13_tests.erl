@@ -15,6 +15,22 @@ parse_test_() ->
 
     ].
 
+parse2_test_() ->
+    [
+
+     {"Parse the example as a sorted system of congruences.",
+      ?_assertEqual(
+         [
+          {n, 7, a, 0},
+          {n, 13, a, 12},
+          {n, 19, a, 12},
+          {n, 31, a, 25},
+          {n, 59, a, 55}
+         ],
+         day13:parse_congruences(?EXAMPLE))}
+
+    ].
+
 earliest_test_() ->
     [
 
