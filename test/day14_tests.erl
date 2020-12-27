@@ -22,6 +22,26 @@ parse_test_() ->
 
     ].
 
+dock_test_() ->
+    [
+
+     {"Test example docking program.",
+      ?_assertEqual(
+         #{7 => "000000000000000000000000000001100101",
+           8 => "000000000000000000000000000001000000"},
+         day14:dock(day14:parse(?EXAMPLE))
+        )
+     },
+
+     {"Test example docking program's checksum.",
+      ?_assertEqual(
+         165,
+         day14:map_sum(day14:dock(day14:parse(?EXAMPLE)))
+        )
+     }
+
+    ].
+
 bin36_test_() ->
     [
 

@@ -2,12 +2,12 @@
 
 -export([solve_part1/1, solve_part2/1]).
 
--export([parse/1, bin36/1, mask/2]).
+-export([parse/1, bin36/1, mask/2, dock/1, map_sum/1]).
 
 %%% solution
 
-solve_part1(_Input) ->
-    undefined.
+solve_part1(Input) ->
+     day14:map_sum(day14:dock(day14:parse(Input))).
 
 solve_part2(_Input) ->
     undefined.
@@ -25,12 +25,24 @@ parse(line, Line) ->
            [Mask] = Args,
            {mask, Mask};
         Command =:= "mem" ->
-            [Address, Value] = [to_int(Arg) || Arg <- Args],
+            [Address, Value] = [str_to_int(Arg) || Arg <- Args],
             {mem, Address, Value}
     end.
 
 %%% Part 1 Solution
 
+dock(Program) ->
+    dock(Program, #{}, undefined).
+
+dock([], Addresses, _Mask) -> Addresses;
+dock([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
+    dock(RestCommands, Addresses, NewMask);
+dock([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
+    dock(RestCommands,
+         Addresses#{Address => mask(bin36(Value), Mask)},
+         Mask).
+
+%% @doc Applies bitmask Mask to Value.
 mask(Value, Mask) ->
     mask(Value, Mask, []).
 
@@ -42,15 +54,17 @@ mask([ValueHead | ValueTail],
 mask([_ | ValueTail],
      [MaskHead | MaskTail], Acc) ->
     mask(ValueTail, MaskTail, [MaskHead | Acc]).
-    
 
-
+%% @doc Sums values of the map
+map_sum(Map) ->
+    lists:sum([bin_to_int(StrVal)
+               ||StrVal <- maps:values(Map)]).
 
 %%% Herlpers
 split(Str, Sep) -> string:lexemes(Str, Sep).
-to_int(Str) -> list_to_integer(Str).
+str_to_int(Str) -> list_to_integer(Str).
 bin36(N) ->
     BinStr = integer_to_list(N, 2),
     Padded = string:pad(BinStr, 36, leading, "0"),
     lists:flatten(Padded).
-
+bin_to_int(BinStr) -> list_to_integer(BinStr, 2).
