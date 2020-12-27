@@ -33,16 +33,29 @@ dock_test_() ->
 
      {"Test example docking program.",
       ?_assertEqual(
-         #{7 => "000000000000000000000000000001100101",
-           8 => "000000000000000000000000000001000000"},
+         #{7 => 101, 8 => 64},
          day14:dock(day14:parse(?EXAMPLE))
         )
-     },
+     }
 
-     {"Test example docking program's checksum.",
+     ,{"Test example docking program's checksum.",
       ?_assertEqual(
          165,
          day14:map_sum(day14:dock(day14:parse(?EXAMPLE)))
+        )
+     }
+
+    ].
+
+dock2_test_() ->
+    [
+
+     {"Test example docking program version 2.",
+      ?_assertEqual(
+         #{16 => 1,17 => 1,18 => 1,19 => 1,24 => 1,25 => 1,26 => 1,
+           27 => 1,58 => 100, 59 => 100}
+         ,
+         day14:dock2(day14:parse(?EXAMPLE2))
         )
      }
 

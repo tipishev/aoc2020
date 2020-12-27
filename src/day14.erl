@@ -13,8 +13,8 @@
 solve_part1(Input) ->
      day14:map_sum(day14:dock(day14:parse(Input))).
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Input) ->
+     day14:map_sum(day14:dock2(day14:parse(Input))).
 
 %%% Parse
 
@@ -39,11 +39,11 @@ dock(Program) ->
     dock(Program, #{}, undefined).
 
 dock([], Addresses, _Mask) -> Addresses;
-dock([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
-    dock(RestCommands, Addresses, NewMask);
-dock([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
-    dock(RestCommands,
-         Addresses#{Address => mask_value(bin36(Value), Mask)},
+dock([{mask, NewMask} | CommandsTail], Addresses, _Mask) ->
+    dock(CommandsTail, Addresses, NewMask);
+dock([{mem, Address, Value} | CommandsTail], Addresses, Mask) ->
+    dock(CommandsTail,
+         Addresses#{Address => bin_to_int(mask_value(bin36(Value), Mask))},
          Mask).
 
 %%% Part 2 Solution
@@ -52,12 +52,17 @@ dock2(Program) ->
     dock2(Program, #{}, undefined).
 
 dock2([], Addresses, _Mask) -> Addresses;
-dock2([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
-    dock2(RestCommands, Addresses, NewMask);
-dock2([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
-    dock2(RestCommands,
-         Addresses#{Address => mask_value(bin36(Value), Mask)},
-         Mask).
+dock2([{mask, NewMask} | CommandsTail], Addresses, _Mask) ->
+    dock2(CommandsTail, Addresses, NewMask);
+dock2([{mem, Address, Value} | CommandsTail], Addresses, Mask) ->
+    MaskedAddress = mask_address(bin36(Address), Mask),
+    ExpandedAddresses = expand(MaskedAddress),
+    NewAddresses = lists:foldl(
+                     fun(Elem, Acc) ->
+                             Acc#{bin_to_int(Elem) => Value}
+                     end,
+                     Addresses, ExpandedAddresses),
+    dock2(CommandsTail, NewAddresses, Mask).
 
 %% @doc Applies bitmask Mask to Value.
 mask_value(Value, Mask) ->
@@ -112,8 +117,7 @@ chunks(List, ChunkSize, Acc) ->
 
 %% @doc Sums values of the map
 map_sum(Map) ->
-    lists:sum([bin_to_int(StrVal)
-               ||StrVal <- maps:values(Map)]).
+    lists:sum(maps:values(Map)).
 
 %%% Herlpers
 split(Str, Sep) -> string:lexemes(Str, Sep).
