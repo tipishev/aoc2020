@@ -2,7 +2,11 @@
 
 -export([solve_part1/1, solve_part2/1]).
 
+% for testing part 1
 -export([parse/1, bin36/1, mask/2, dock/1, map_sum/1]).
+
+% for testing part 2
+-export([dock2/1]).
 
 %%% solution
 
@@ -39,6 +43,19 @@ dock([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
     dock(RestCommands, Addresses, NewMask);
 dock([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
     dock(RestCommands,
+         Addresses#{Address => mask(bin36(Value), Mask)},
+         Mask).
+
+%%% Part 2 Solution
+
+dock2(Program) ->
+    dock2(Program, #{}, undefined).
+
+dock2([], Addresses, _Mask) -> Addresses;
+dock2([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
+    dock2(RestCommands, Addresses, NewMask);
+dock2([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
+    dock2(RestCommands,
          Addresses#{Address => mask(bin36(Value), Mask)},
          Mask).
 
