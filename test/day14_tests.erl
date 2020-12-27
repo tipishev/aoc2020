@@ -21,3 +21,28 @@ parse_test_() ->
          day14:parse(?EXAMPLE))}
 
     ].
+
+bin36_test_() ->
+    [
+
+     {"Test converting 11 to a padded binary.",
+      ?_assertEqual(
+         "000000000000000000000000000000001011",
+         day14:bin36(11)
+        )
+     }
+
+    ].
+
+mask_test_() ->
+    [
+
+     {"Test masking 11 with the example mask.",
+      ?_assertEqual(
+         "000000000000000000000000000001001001",
+         day14:mask("000000000000000000000000000000001011",
+                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X")
+        )
+     }
+
+    ].
