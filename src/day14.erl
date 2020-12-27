@@ -87,8 +87,9 @@ mask_address([_ | ValueTail],
 
 %% @doc Expands a floating value to a list of concrete values.
 expand(Floating) ->
-    lists:sort(chunks(lists:flatten(expand([], Floating)),
-           length(Floating))).
+    DeepList = expand([], Floating),
+    LongString = lists:flatten(DeepList),
+    chunks(LongString, length(Floating)).
 
 expand(ReversedConcrete, []) ->
     lists:reverse(ReversedConcrete);
@@ -102,13 +103,10 @@ chunks(List, ChunkSize) ->
     chunks(List, ChunkSize, []).
 
 chunks([], _ChunkSize, Acc) ->
-    Acc;
+    lists:reverse(Acc);
 chunks(List, ChunkSize, Acc) ->
-    chunks(
-      lists:sublist(List, ChunkSize + 1, length(List)),
-      ChunkSize,
-      [lists:sublist(List, ChunkSize) | Acc]
-     ).
+    {Chunk, Tail} = lists:split(ChunkSize, List),
+    chunks(Tail, ChunkSize, [Chunk | Acc]).
 
 
 
