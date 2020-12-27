@@ -78,12 +78,12 @@ mask_address(Address, Mask) ->
 
 mask_address([], [], Acc) ->
     lists:reverse(Acc);
-mask_address([ValueHead | ValueTail],
-     [$X | MaskTail], Acc) ->
+mask_address([_ValueHead | ValueTail], [$X | MaskTail], Acc) ->
+    mask_address(ValueTail, MaskTail, [$X | Acc]);
+mask_address([ValueHead | ValueTail], [$0 | MaskTail], Acc) ->
     mask_address(ValueTail, MaskTail, [ValueHead | Acc]);
-mask_address([_ | ValueTail],
-     [MaskHead | MaskTail], Acc) ->
-    mask_address(ValueTail, MaskTail, [MaskHead | Acc]).
+mask_address([_ValueHead | ValueTail], [$1 | MaskTail], Acc) ->
+    mask_address(ValueTail, MaskTail, [$1 | Acc]).
 
 %% @doc Expands a floating value to a list of concrete values.
 expand(Floating) ->

@@ -73,6 +73,19 @@ mask_value_test_() ->
 
     ].
 
+mask_address_test_() ->
+    [
+
+     {"Test masking address with the example mask.",
+      ?_assertEqual(
+         "000000000000000000000000000000X1101X",
+         day14:mask_address("000000000000000000000000000000101010",
+                            "000000000000000000000000000000X1001X")
+        )
+     }
+
+    ].
+
 
 expand_address_test_() ->
     [
