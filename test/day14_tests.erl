@@ -60,14 +60,14 @@ bin36_test_() ->
 
     ].
 
-mask_test_() ->
+mask_value_test_() ->
     [
 
      {"Test masking 11 with the example mask.",
       ?_assertEqual(
          "000000000000000000000000000001001001",
-         day14:mask("000000000000000000000000000000001011",
-                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X")
+         day14:mask_value("000000000000000000000000000000001011",
+                          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X")
         )
      }
 

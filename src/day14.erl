@@ -3,7 +3,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 % for testing part 1
--export([parse/1, bin36/1, mask/2, dock/1, map_sum/1]).
+-export([parse/1, bin36/1, mask_value/2, dock/1, map_sum/1]).
 
 % for testing part 2
 -export([dock2/1]).
@@ -43,7 +43,7 @@ dock([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
     dock(RestCommands, Addresses, NewMask);
 dock([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
     dock(RestCommands,
-         Addresses#{Address => mask(bin36(Value), Mask)},
+         Addresses#{Address => mask_value(bin36(Value), Mask)},
          Mask).
 
 %%% Part 2 Solution
@@ -56,21 +56,21 @@ dock2([{mask, NewMask} | RestCommands], Addresses, _Mask) ->
     dock2(RestCommands, Addresses, NewMask);
 dock2([{mem, Address, Value} | RestCommands], Addresses, Mask) ->
     dock2(RestCommands,
-         Addresses#{Address => mask(bin36(Value), Mask)},
+         Addresses#{Address => mask_value(bin36(Value), Mask)},
          Mask).
 
 %% @doc Applies bitmask Mask to Value.
-mask(Value, Mask) ->
-    mask(Value, Mask, []).
+mask_value(Value, Mask) ->
+    mask_value(Value, Mask, []).
 
-mask([], [], Acc) ->
+mask_value([], [], Acc) ->
     lists:reverse(Acc);
-mask([ValueHead | ValueTail],
+mask_value([ValueHead | ValueTail],
      [$X | MaskTail], Acc) ->
-    mask(ValueTail, MaskTail, [ValueHead | Acc]);
-mask([_ | ValueTail],
+    mask_value(ValueTail, MaskTail, [ValueHead | Acc]);
+mask_value([_ | ValueTail],
      [MaskHead | MaskTail], Acc) ->
-    mask(ValueTail, MaskTail, [MaskHead | Acc]).
+    mask_value(ValueTail, MaskTail, [MaskHead | Acc]).
 
 %% @doc Sums values of the map
 map_sum(Map) ->
