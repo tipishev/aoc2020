@@ -6,7 +6,7 @@
 -export([parse/1, bin36/1, mask_value/2, dock/1, map_sum/1]).
 
 % for testing part 2
--export([dock2/1]).
+-export([dock2/1, mask_address/2, expand/1]).
 
 %%% solution
 
@@ -71,6 +71,46 @@ mask_value([ValueHead | ValueTail],
 mask_value([_ | ValueTail],
      [MaskHead | MaskTail], Acc) ->
     mask_value(ValueTail, MaskTail, [MaskHead | Acc]).
+
+%% @doc Applies bitmask Mask to Address.
+mask_address(Address, Mask) ->
+    mask_address(Address, Mask, []).
+
+mask_address([], [], Acc) ->
+    lists:reverse(Acc);
+mask_address([ValueHead | ValueTail],
+     [$X | MaskTail], Acc) ->
+    mask_address(ValueTail, MaskTail, [ValueHead | Acc]);
+mask_address([_ | ValueTail],
+     [MaskHead | MaskTail], Acc) ->
+    mask_address(ValueTail, MaskTail, [MaskHead | Acc]).
+
+%% @doc Expands a floating value to a list of concrete values.
+expand(Floating) ->
+    lists:sort(chunks(lists:flatten(expand([], Floating)),
+           length(Floating))).
+
+expand(ReversedConcrete, []) ->
+    lists:reverse(ReversedConcrete);
+expand(Suffix, [$X | FloatingTail]) ->
+    [expand([$0 | Suffix], FloatingTail),
+     expand([$1 | Suffix], FloatingTail)];
+expand(Suffix, [Any | FloatingTail]) ->
+    expand([Any | Suffix], FloatingTail).
+
+chunks(List, ChunkSize) ->
+    chunks(List, ChunkSize, []).
+
+chunks([], _ChunkSize, Acc) ->
+    Acc;
+chunks(List, ChunkSize, Acc) ->
+    chunks(
+      lists:sublist(List, ChunkSize + 1, length(List)),
+      ChunkSize,
+      [lists:sublist(List, ChunkSize) | Acc]
+     ).
+
+
 
 %% @doc Sums values of the map
 map_sum(Map) ->
