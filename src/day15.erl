@@ -20,21 +20,18 @@ parse(Input) ->
 
 %%% Solve Part 1
 
-%% @doc returns the number spoken after Timeout.
-play(StartingNumbers, Timeout) ->
-    todo.
+play(StartingNumbers) ->
+    Memory = init_memory(StartingNumbers).
 
-% play(CurrentTurn= length(StartingNumbers) + 1,
-%      MostRecentNumber=lists:last(StartingNumbers),
-%      Memory,
-%      Timeout).
+play(Memory) -> todo.
+    
 
 %% @doc Initializes the memory with starting numbers.
-init_memory(StartingNumbers) ->
-    init_memory(StartingNumbers, #{}, 1).
-init_memory([], Acc, TurnNum) ->
-    {memory, Acc, turn, TurnNum};
-init_memory([H | T], Acc, TurnNum) ->
-    init_memory(T, Acc#{H => {once, TurnNum}}, TurnNum + 1).
+init_memory(Starting) ->
+    init_memory(Starting, #{}, 1, undefined).
+init_memory([], Acc, Turn, Last) ->
+    {mem, Acc, last, Last, turn, Turn};
+init_memory([H | T], Acc, Turn, _Last) ->
+    init_memory(T, Acc#{H => Turn}, Turn + 1, H).
 
-update_memory(Memory, Number, CurrentTurn) ->
+% update_memory(Memory, Number, CurrentTurn) ->

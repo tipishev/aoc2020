@@ -15,10 +15,6 @@ init_memory_test_() ->
     [
 
      {"Test initializing memory with starting numbers.",
-      ?_assertEqual(#{1 => {once, 1}
-                      ,2 => {once, 2}
-                      ,3 => {once, 3}
-                     }, day15:init_memory([1, 2, 3]))}
-
-
+      ?_assertEqual(#{3 => 1, 1 => 2 , 4 => 3 },
+                    day15:init_memory([3, 1, 4]))}
     ].
