@@ -19,16 +19,18 @@ parse(Input) ->
 
 %%% Solve Part 1
 
+% simple but useless shortcutting
+spoken(Starting, Turn) when Turn =< length(Starting)->
+    lists:nth(Turn, Starting);
 spoken(Starting, Turn) ->
     spoken(Starting, Turn, _Mrsn=undefined, _Mem=#{}).
 
-%% @doc Mrsn is Most Recently Spoken Number
-spoken(Starting, Turn, _Mrsn, _Mem)
-  when Turn =< length(Starting)->
-    lists:nth(Turn, Starting);
+spoken(Starting, Turn, _MRSN, Mem=#{}) ->
+    InitMem = 
 
-spoken(_Starting, _Turn, Mrsn, Mem) ->
-    Spoken = case maps:is_key(Mrsn, Mem) of
+%% @doc Most Recently Spoken Number (MRSN)
+spoken(_Starting, _Turn, MRSN, Mem) ->
+    Spoken = case maps:is_key(MRSN, Mem) of
         true -> todo;
         false -> 0
     end,
