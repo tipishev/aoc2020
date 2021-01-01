@@ -19,19 +19,3 @@ parse(Input) ->
     [list_to_integer(N) || N <- string:lexemes(Input, ",")].
 
 %%% Solve Part 1
-
-play(StartingNumbers) ->
-    Memory = init_memory(StartingNumbers).
-
-play(Memory) -> todo.
-    
-
-%% @doc Initializes the memory with starting numbers.
-init_memory(Starting) ->
-    init_memory(Starting, #{}, 1, undefined).
-init_memory([], Acc, Turn, Last) ->
-    {mem, Acc, last, Last, turn, Turn};
-init_memory([H | T], Acc, Turn, _Last) ->
-    init_memory(T, Acc#{H => Turn}, Turn + 1, H).
-
-% update_memory(Memory, Number, CurrentTurn) ->
