@@ -50,13 +50,12 @@ part1_test_() ->
                      day16:solve_part1(?EXAMPLE))}
     ].
 
-validate_test_() ->
+filter_test_() ->
     [
 
-     {"Validate tickets",
+     {"Filter tickets",
       ?_assertEqual( [[1, 2, 3], [5, 2, 1]],
-                     day16:validate(
-                       tickets,
+                     day16:filter(
                        _Tickets=[[1, 2, 3], [5, 2, 1], [1, 3, 4]],
                        _ValidValues=[1, 2, 3, 5]))}
     ].
