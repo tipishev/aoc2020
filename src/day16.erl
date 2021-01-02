@@ -1,7 +1,7 @@
 -module(day16).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1, to_valid_values/1, filter/2, deduce/1]).
+-export([parse/1, to_valid_values/1, filter/2, deduce/1, transpose/1]).
 
 %%% solution
 
@@ -69,6 +69,20 @@ parse(nearby, Nearby) ->
     [_Label | CsvIntsList] = string:lexemes(Nearby, "\n"),
     [parse(csv_ints, CsvInts) || CsvInts <- CsvIntsList].
 
-%%% Herlpers
+%%% herlpers
 deduplicate(List) ->
     sets:to_list(sets:from_list(List)).
+
+transpose(Matrix) ->
+    transpose(Matrix, []).
+
+%% @doc transpose a matrix
+transpose([], Result) ->
+    [lists:reverse(Row) || Row <- Result];
+transpose([Row | TailRows], Result) ->
+    transpose(TailRows, add_column(_Column=Row, Result)).
+
+add_column(Column, []) ->
+    [[V] || V <- Column];
+add_column(Column, Columns) ->
+    [[V | Vs] || {V, Vs} <- lists:zip(Column, Columns)].

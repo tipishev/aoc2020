@@ -60,6 +60,14 @@ filter_test_() ->
                        _ValidValues=[1, 2, 3, 5]))}
     ].
 
+transpose_test_() ->
+    [
+
+     {"Test matrix transposition.",
+      ?_assertEqual( [[1, 2, 3], [4, 5, 6]],
+                     day16:transpose([[1, 4], [2, 5], [3, 6]]))
+     }].
+
 % deduce_fields_test_() ->
 %     [
 
