@@ -59,3 +59,11 @@ filter_test_() ->
                        _Tickets=[[1, 2, 3], [5, 2, 1], [1, 3, 4]],
                        _ValidValues=[1, 2, 3, 5]))}
     ].
+
+deduce_fields_test_() ->
+    [
+
+     {"Deduce fields for example input",
+      ?_assertEqual([row, class, seat],
+                     day16:deduce(day16:parse(?EXAMPLE)))}
+    ].

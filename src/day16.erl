@@ -1,7 +1,7 @@
 -module(day16).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1, to_valid_values/1, filter/2]).
+-export([parse/1, to_valid_values/1, filter/2, deduce/1]).
 
 %%% solution
 
@@ -12,6 +12,9 @@ solve_part2(_Input) ->
     undefined.
 
 %%% part 2
+
+deduce(_) ->
+    todo.
 
 filter(Tickets, ValidValues) ->
     [Ticket  || Ticket <- Tickets,
