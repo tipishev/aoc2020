@@ -1,7 +1,9 @@
 -module(day16).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1, to_valid_values/1, filter/2, deduce/1, transpose/1]).
+-export([parse/1, to_valid_values/1, filter/2, deduce/1, transpose/1,
+         possible_fields/2, as_set/1, as_sets/1
+        ]).
 
 %%% solution
 
@@ -16,11 +18,24 @@ solve_part2(_Input) ->
 deduce(_) ->
     todo.
 
+possible_fields(Column, Fields) ->
+    todo.
+
 filter(Tickets, ValidValues) ->
     [Ticket  || Ticket <- Tickets,
                  validate(Ticket, ValidValues)].
 validate(Ticket, ValidValues) ->
     lists:all(fun(Val) -> lists:member(Val, ValidValues) end, Ticket).
+
+as_sets(Fields) ->
+    maps:map(fun(_Key, Ranges) -> as_set(Ranges) end, Fields).
+
+as_set(Ranges) ->
+    sets:from_list(
+      lists:flatten(
+        [lists:seq(From, To)
+         || {From, To} <- Ranges]
+       )).
 
 %%% part 1
 
