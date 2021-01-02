@@ -5,7 +5,8 @@ parse_test_() ->
     [
 
      {"Example parsing test.",
-      ?_assertEqual([0, 3, 6], day15:parse("0,3,6"))}
+      ?_assertEqual([0, 3, 6], day15:parse("0,3,6
+"))}
 
     ].
 

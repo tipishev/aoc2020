@@ -9,13 +9,15 @@
 solve_part1(Input) ->
     spoken(parse(Input), 2020).
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Input) ->
+    spoken(parse(Input), 30000000).
 
 %%% Parse
 
 parse(Input) ->
-    [list_to_integer(N) || N <- string:lexemes(Input, ",")].
+    [list_to_integer(N)
+     || N <- string:lexemes(
+               string:trim(Input, trailing), ",")].
 
 %%% Solve Part 1
 
