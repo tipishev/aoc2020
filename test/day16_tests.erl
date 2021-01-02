@@ -68,16 +68,16 @@ transpose_test_() ->
                      day16:transpose([[1, 4], [2, 5], [3, 6]]))
      }].
 
-% possible_fields_test_() ->
-%     [
+possible_fields_test_() ->
+    [
 
-%      {"Test possible fields deduction.",
-%       ?_assertEqual( [row, seat],
-%                      day16:possible_fields([33, 34],
-%                                            #{class => [{1, 3}, {5, 7}],
-%                                              row => [{6, 11}, {33, 44}],
-%                                              seat => [{13, 40}, {45, 50}]}))
-%      }].
+     {"Test possible fields deduction.",
+      ?_assertEqual( [row, seat],
+                     day16:possible_fields([33, 34],
+                                           #{class => [{1, 3}, {5, 7}],
+                                             row => [{6, 11}, {33, 44}],
+                                             seat => [{13, 40}, {45, 50}]}))
+     }].
 
 as_set_test_() ->
     [

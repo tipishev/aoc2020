@@ -19,7 +19,12 @@ deduce(_) ->
     todo.
 
 possible_fields(Column, Fields) ->
-    todo.
+    FieldSets = as_sets(Fields),
+    ColumnSet = sets:from_list(Column),
+    [Key
+     || Key <- maps:keys(FieldSets),
+        sets:is_subset(ColumnSet, maps:get(Key, FieldSets))
+    ].
 
 filter(Tickets, ValidValues) ->
     [Ticket  || Ticket <- Tickets,
