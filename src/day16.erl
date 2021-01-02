@@ -10,13 +10,41 @@
 solve_part1(Input) ->
     solve(part1, parse(Input)).
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2(Input) ->
+    Deduction = solve(part2, parse(Input)),
+    DepartureValues = [Value || {Label, Value} <- Deduction,
+              lists:member(Label, [
+                                   'departure location'
+                                   ,'departure station'
+                                   ,'departure platform'
+                                   ,'departure track'
+                                   ,'departure date'
+                                   ,'departure time'
+                                  ])
+    ],
+    lists:foldl(fun(Elem, Acc) -> Elem * Acc end, 1, DepartureValues).
 
 %%% part 2
 
-deduce(_) ->
-    todo.
+deduce({fields, Fields, your, Your, nearby, Nearby}) ->
+    ValidValues = to_valid_values(Fields),
+    ValidTickets = filter(Nearby, ValidValues),
+    Columns = transpose(ValidTickets),
+    Idx2Possible = lists:sort([{length(possible_fields(Column, Fields)),
+                     possible_fields(Column, Fields),
+                     Idx}
+     || {Idx, Column} <- enumerate(Columns)
+    ]),
+    {Result, _UsedLabels} = lists:foldl(fun deduce_folder/2,
+                                        {[], []}, Idx2Possible),
+    Labels = [Label || {_Idx, Label} <- lists:sort(Result)],
+    lists:zip(Labels, Your).
+
+deduce_folder({_, PossibleValues, Idx}, {Result, UsedLabels}) ->
+    [Only] = sets:to_list(sets:subtract(sets:from_list(PossibleValues),
+                          sets:from_list(UsedLabels))),
+    {[{Idx, Only} | Result], [Only | UsedLabels]}.
+       
 
 possible_fields(Column, Fields) ->
     FieldSets = as_sets(Fields),
@@ -48,7 +76,9 @@ solve(part1, {fields, Fields, your, _Your, nearby, Nearby}) ->
     ValidValues = to_valid_values(Fields),
     lists:sum([Value
                || Value <- lists:flatten(Nearby),
-                  not lists:member(Value, ValidValues)]).
+                  not lists:member(Value, ValidValues)]);
+solve(part2, ParsedInput) ->
+    deduce(ParsedInput).
 
 
 to_valid_values(Fields) ->
@@ -93,10 +123,12 @@ parse(nearby, Nearby) ->
 deduplicate(List) ->
     sets:to_list(sets:from_list(List)).
 
-transpose(Matrix) ->
-    transpose(Matrix, []).
+enumerate(List) ->
+     lists:zip(lists:seq(1, length(List)), List).
 
 %% @doc transpose a matrix
+transpose(Matrix) ->
+    transpose(Matrix, []).
 transpose([], Result) ->
     [lists:reverse(Row) || Row <- Result];
 transpose([Row | TailRows], Result) ->

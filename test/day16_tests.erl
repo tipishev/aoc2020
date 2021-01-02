@@ -95,10 +95,10 @@ as_sets_test_() ->
                      day16:as_sets(#{foo => [{1, 3}, {11, 12}]}))
      }].
 
-% deduce_fields_test_() ->
-%     [
+deduce_fields_test_() ->
+    [
 
-%      {"Deduce fields for example input",
-%       ?_assertEqual([row, class, seat],
-%                      day16:deduce(day16:parse(?EXAMPLE)))}
-%     ].
+     {"Deduce fields for example input",
+      ?_assertEqual([{row,7},{class,1},{seat,14}],
+                     day16:deduce(day16:parse(?EXAMPLE)))}
+    ].
