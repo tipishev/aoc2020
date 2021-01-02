@@ -1,15 +1,30 @@
 -module(day16).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1]).
+-export([parse/1, to_valid_values/1]).
 
 %%% solution
 
-solve_part1(_Input) ->
-    undefined.
+solve_part1(Input) ->
+    solve(part1, parse(Input)).
 
 solve_part2(_Input) ->
     undefined.
+
+%%% part 1
+
+solve(part1, {fields, Fields, your, _Your, nearby, Nearby}) ->
+    ValidValues = to_valid_values(Fields),
+    lists:sum([Value
+               || Value <- lists:flatten(Nearby),
+                  not lists:member(Value, ValidValues)]).
+
+
+to_valid_values(Fields) ->
+    FlatRanges = lists:flatten(maps:values(Fields)),
+    lists:sort(
+      lists:flatten(
+        [lists:seq(From, To) || {From, To} <- FlatRanges])).
 
 %%% parse
 parse(Input) ->

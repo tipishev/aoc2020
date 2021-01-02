@@ -18,7 +18,7 @@ nearby tickets:
 parse_test_() ->
     [
 
-     {"Parse",
+     {"Parse the example.",
       ?_assertEqual(
          {fields, #{class => [{1, 3}, {5, 7}],
                     row => [{6, 11}, {33, 44}],
@@ -30,5 +30,22 @@ parse_test_() ->
                    [38, 6, 12] ]
          },
          day16:parse(?EXAMPLE))}
+    ].
 
+fields_to_lists_test_() ->
+    [
+
+     {"Convert fields to a sorted list of allowed values.",
+      ?_assertEqual(
+         [1, 2, 3, 42, 43, 44, 45],
+         day16:to_valid_values(#{foo => {1, 3},
+                                 bar => {42, 45}}))}
+    ].
+
+part1_test_() ->
+    [
+
+     {"Check example input",
+      ?_assertEqual( 71,
+                     day16:solve_part1(?EXAMPLE))}
     ].
