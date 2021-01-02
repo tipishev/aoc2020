@@ -2,12 +2,12 @@
 
 -export([solve_part1/1, solve_part2/1]).
 
--export([parse/1, spoken/2]).
+-export([parse/1, spoken/2, enumerate/1]).
 
 %%% solution
 
-solve_part1(_Input) ->
-    undefined.
+solve_part1(Input) ->
+    spoken(parse(Input), 2020).
 
 solve_part2(_Input) ->
     undefined.
@@ -20,18 +20,29 @@ parse(Input) ->
 %%% Solve Part 1
 
 % simple but useless shortcutting
-spoken(Starting, Turn) when Turn =< length(Starting)->
-    lists:nth(Turn, Starting);
-spoken(Starting, Turn) ->
-    spoken(Starting, Turn, _Mrsn=undefined, _Mem=#{}).
+spoken(Starting, MaxTurn) when MaxTurn =< length(Starting)->
+    lists:nth(MaxTurn, Starting);
+spoken(Starting, MaxTurn) ->
+    InitMem = maps:from_list(enumerate(Starting)),
+    spoken(_Starting=whatever, MaxTurn,
+           _Current=length(Starting) + 1,
+           _Mrsn=lists:last(Starting),
+           _Mem=InitMem).
 
-spoken(Starting, Turn, _MRSN, Mem=#{}) ->
-    InitMem = 
-
-%% @doc Most Recently Spoken Number (MRSN)
-spoken(_Starting, _Turn, MRSN, Mem) ->
-    Spoken = case maps:is_key(MRSN, Mem) of
-        true -> todo;
-        false -> 0
+spoken(_Starting, MaxTurn, Current, MRSN, _Mem) 
+  when Current =:= MaxTurn + 1 ->
+    MRSN;
+spoken(_Starting, MaxTurn, Current, MRSN, Mem) ->
+    {Spoken, NewMem} = case maps:is_key(MRSN, Mem) of
+        false ->
+            {0, Mem#{MRSN => Current - 1}};
+        true ->
+            MemVal = maps:get(MRSN, Mem),
+            {Current - 1 - MemVal, Mem#{MRSN => Current - 1}}
     end,
-    Spoken.
+    spoken(_Starting, MaxTurn, Current + 1, Spoken, NewMem).
+
+%%% Herlpers
+
+enumerate(List) ->
+    lists:zip(List, lists:seq(1, length(List))).

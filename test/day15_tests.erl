@@ -23,4 +23,23 @@ number_spoken_test_() ->
 
      ,{"If the MRSN is old, next is turns apart.",
       ?_assertEqual(3, day15:spoken([0, 3, 6], 5))}
+
+     ,{"Turn 6",
+      ?_assertEqual(3, day15:spoken([0, 3, 6], 6))}
+
+     ,{"Turn 7",
+      ?_assertEqual(1, day15:spoken([0, 3, 6], 7))}
+
+     ,{"Turn 2020",
+      ?_assertEqual(436, day15:spoken([0, 3, 6], 2020))}
+
+    ].
+
+enumerate_test_() ->
+    [
+
+     {"Example parsing test.",
+      ?_assertEqual([{3, 1}, {14, 2}, {15, 3}],
+                    day15:enumerate([3, 14, 15]))}
+
     ].
