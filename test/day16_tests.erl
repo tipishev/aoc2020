@@ -49,3 +49,14 @@ part1_test_() ->
       ?_assertEqual( 71,
                      day16:solve_part1(?EXAMPLE))}
     ].
+
+validate_test_() ->
+    [
+
+     {"Validate tickets",
+      ?_assertEqual( [[1, 2, 3], [5, 2, 1]],
+                     day16:validate(
+                       tickets,
+                       _Tickets=[[1, 2, 3], [5, 2, 1], [1, 3, 4]],
+                       _ValidValues=[1, 2, 3, 5]))}
+    ].

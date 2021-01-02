@@ -1,7 +1,7 @@
 -module(day16).
 
 -export([solve_part1/1, solve_part2/1]).
--export([parse/1, to_valid_values/1]).
+-export([parse/1, to_valid_values/1, validate/3]).
 
 %%% solution
 
@@ -10,6 +10,14 @@ solve_part1(Input) ->
 
 solve_part2(_Input) ->
     undefined.
+
+%%% part 2
+
+validate(tickets, Tickets, ValidValues) ->
+    [Ticket  || Ticket <- Tickets,
+                 validate(ticket, Ticket, ValidValues)];
+validate(ticket, Ticket, ValidValues) ->
+    lists:all(fun(Val) -> lists:member(Val, ValidValues) end, Ticket).
 
 %%% part 1
 
