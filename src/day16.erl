@@ -34,8 +34,12 @@ solve(part1, {fields, Fields, your, _Your, nearby, Nearby}) ->
 to_valid_values(Fields) ->
     FlatRanges = lists:flatten(maps:values(Fields)),
     lists:sort(
-      lists:flatten(
-        [lists:seq(From, To) || {From, To} <- FlatRanges])).
+      deduplicate(
+        lists:flatten(
+          [lists:seq(From, To) || {From, To} <- FlatRanges]
+         )
+       )
+     ).
 
 %%% parse
 parse(Input) ->
@@ -64,3 +68,7 @@ parse(csv_ints, CsvInts) ->
 parse(nearby, Nearby) ->
     [_Label | CsvIntsList] = string:lexemes(Nearby, "\n"),
     [parse(csv_ints, CsvInts) || CsvInts <- CsvIntsList].
+
+%%% Herlpers
+deduplicate(List) ->
+    sets:to_list(sets:from_list(List)).

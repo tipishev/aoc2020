@@ -60,10 +60,10 @@ filter_test_() ->
                        _ValidValues=[1, 2, 3, 5]))}
     ].
 
-deduce_fields_test_() ->
-    [
+% deduce_fields_test_() ->
+%     [
 
-     {"Deduce fields for example input",
-      ?_assertEqual([row, class, seat],
-                     day16:deduce(day16:parse(?EXAMPLE)))}
-    ].
+%      {"Deduce fields for example input",
+%       ?_assertEqual([row, class, seat],
+%                      day16:deduce(day16:parse(?EXAMPLE)))}
+%     ].

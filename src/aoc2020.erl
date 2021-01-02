@@ -1,5 +1,5 @@
 -module(aoc2020).
--export([solve/1]).
+-export([solve/1, read/1]).
 
 -record(solution, {part1, part2}).
 -type solution() :: #solution{}.
